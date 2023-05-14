@@ -77,8 +77,7 @@ void set_x_y(const unsigned char quad, const unsigned char corner)
 
     switch (quad) {
     case QUAD_1: {
-        switch (corner)
-        {
+        switch (corner) {
         case CORNER_1: {
             x = 16;
             y = 0;
@@ -243,7 +242,7 @@ void set_canvas(unsigned char* canvas32x32)
         set_cursor_y(0);
     }
 
-    g_canvas32x32 = canvas32x32;    
+    g_canvas32x32 = canvas32x32;
 }
 
 void execute(unsigned char instruction)
