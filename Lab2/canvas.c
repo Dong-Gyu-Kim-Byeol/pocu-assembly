@@ -237,12 +237,13 @@ void set_canvas(unsigned char* canvas32x32)
 {
     assert(canvas32x32 != NULL);
 
-    g_canvas32x32 = canvas32x32;
+    if (g_canvas32x32 == NULL) {
+        set_palette(0);
+        set_cursor_x(0);
+        set_cursor_y(0);
+    }
 
-    memset(g_canvas32x32, 0, CANVAS_SIZE * CANVAS_SIZE);
-    set_palette(0);
-    set_cursor_x(0);
-    set_cursor_y(0);
+    g_canvas32x32 = canvas32x32;    
 }
 
 void execute(unsigned char instruction)
