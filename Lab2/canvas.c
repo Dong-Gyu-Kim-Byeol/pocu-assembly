@@ -10,7 +10,7 @@ unsigned char* g_canvas32x32 = NULL;
 
 // registor
 
-unsigned char* g_p_palette = NULL;
+const unsigned char* g_p_palette = NULL;
 
 void set_palette(unsigned char id)
 {
@@ -75,38 +75,31 @@ void set_x_y(const unsigned char quad, const unsigned char corner)
     unsigned int x = 0;
     unsigned int y = 0;
 
-    switch (quad)
-    {
-    case QUAD_1:
-    {
+    switch (quad) {
+    case QUAD_1: {
         switch (corner)
         {
-        case CORNER_1:
-        {
+        case CORNER_1: {
             x = 16;
             y = 0;
             break;
         }
-        case CORNER_2:
-        {
+        case CORNER_2: {
             x = 16;
             y = 15;
             break;
         }
-        case CORNER_3:
-        {
+        case CORNER_3: {
             x = 31;
             y = 0;
             break;
         }
-        case CORNER_4:
-        {
+        case CORNER_4: {
             x = 31;
             y = 15;
             break;
         }
-        default:
-        {
+        default: {
             assert(0);
             break;
         }
@@ -114,36 +107,29 @@ void set_x_y(const unsigned char quad, const unsigned char corner)
 
         break;
     }
-    case QUAD_2:
-    {
-        switch (corner)
-        {
-        case CORNER_1:
-        {
+    case QUAD_2: {
+        switch (corner) {
+        case CORNER_1: {
             x = 0;
             y = 0;
             break;
         }
-        case CORNER_2:
-        {
+        case CORNER_2: {
             x = 0;
             y = 15;
             break;
         }
-        case CORNER_3:
-        {
+        case CORNER_3: {
             x = 15;
             y = 0;
             break;
         }
-        case CORNER_4:
-        {
+        case CORNER_4: {
             x = 15;
             y = 15;
             break;
         }
-        default:
-        {
+        default: {
             assert(0);
             break;
         }
@@ -151,36 +137,29 @@ void set_x_y(const unsigned char quad, const unsigned char corner)
 
         break;
     }
-    case QUAD_3:
-    {
-        switch (corner)
-        {
-        case CORNER_1:
-        {
+    case QUAD_3: {
+        switch (corner) {
+        case CORNER_1: {
             x = 0;
             y = 16;
             break;
         }
-        case CORNER_2:
-        {
+        case CORNER_2: {
             x = 0;
             y = 31;
             break;
         }
-        case CORNER_3:
-        {
+        case CORNER_3: {
             x = 15;
             y = 16;
             break;
         }
-        case CORNER_4:
-        {
+        case CORNER_4: {
             x = 15;
             y = 31;
             break;
         }
-        default:
-        {
+        default: {
             assert(0);
             break;
         }
@@ -188,36 +167,29 @@ void set_x_y(const unsigned char quad, const unsigned char corner)
 
         break;
     }
-    case QUAD_4:
-    {
-        switch (corner)
-        {
-        case CORNER_1:
-        {
+    case QUAD_4: {
+        switch (corner) {
+        case CORNER_1: {
             x = 16;
             y = 16;
             break;
         }
-        case CORNER_2:
-        {
+        case CORNER_2: {
             x = 16;
             y = 31;
             break;
         }
-        case CORNER_3:
-        {
+        case CORNER_3: {
             x = 31;
             y = 16;
             break;
         }
-        case CORNER_4:
-        {
+        case CORNER_4: {
             x = 31;
             y = 31;
             break;
         }
-        default:
-        {
+        default: {
             assert(0);
             break;
         }
@@ -225,8 +197,7 @@ void set_x_y(const unsigned char quad, const unsigned char corner)
 
         break;
     }
-    default:
-    {
+    default: {
         assert(0);
         break;
     }
@@ -241,23 +212,19 @@ void brush_color(const unsigned char pen_mode)
 #define PEN_MODE_UP     (0b00000000)
 #define PEN_MODE_DOWN   (0b00000001)
 
-    switch (pen_mode)
-    {
-    case PEN_MODE_UP:
-    {
+    switch (pen_mode) {
+    case PEN_MODE_UP: {
         // empty
         break;
     }
-    case PEN_MODE_DOWN:
-    {
+    case PEN_MODE_DOWN: {
         const unsigned int cursor_index = get_cursor_index();
         const unsigned char color = get_brush_color();
 
         g_canvas32x32[cursor_index] = color;
         break;
     }
-    default:
-    {
+    default: {
         assert(0);
         break;
     }
@@ -299,33 +266,27 @@ void execute(unsigned char instruction)
 
     const unsigned char opcode = instruction & OPCODE_MASK;
     const unsigned char argument = instruction & ARGUMENT_MASK;
-    switch (opcode)
-    {
-    case OPCODE_CLEAR:
-    {
+    switch (opcode) {
+    case OPCODE_CLEAR: {
         assert(g_canvas32x32 != NULL);
 
         const unsigned char color = get_palette_color(argument);
         memset(g_canvas32x32, color, CANVAS_SIZE * CANVAS_SIZE);
         break;
     }
-    case OPCODE_SET_PALETTE:
-    {
+    case OPCODE_SET_PALETTE: {
         set_palette(argument);
         break;
     }
-    case OPCODE_SET_X:
-    {
+    case OPCODE_SET_X: {
         set_cursor_x(argument);
         break;
     }
-    case OPCODE_SET_Y:
-    {
+    case OPCODE_SET_Y: {
         set_cursor_y(argument);
         break;
     }
-    case OPCODE_DRAW_COLOR:
-    {
+    case OPCODE_DRAW_COLOR: {
         assert(g_canvas32x32 != NULL);
 
         const unsigned int cursor_index = get_cursor_index();
@@ -334,13 +295,11 @@ void execute(unsigned char instruction)
         g_canvas32x32[cursor_index] = color;
         break;
     }
-    case OPCODE_SET_BRUSH:
-    {
+    case OPCODE_SET_BRUSH: {
         set_brush_color_index(argument);
         break;
     }
-    case OPCODE_SET_X_Y:
-    {
+    case OPCODE_SET_X_Y: {
         const unsigned char CORNER_MASK = 0b00000011;
         const unsigned char QUAD_MASK = 0b00001100;
 
@@ -350,8 +309,7 @@ void execute(unsigned char instruction)
         set_x_y(quad, corner);
         break;
     }
-    case OPCODE_MOV:
-    {
+    case OPCODE_MOV: {
 #define X_DIR_DONT_MOVE     (0b00000000)
 #define X_DIR_RIGHT_MOVE    (0b00000001)
 #define X_DIR_LEFT_MOVE     (0b00000010)
@@ -370,53 +328,43 @@ void execute(unsigned char instruction)
 
         brush_color(pen_mode);
 
-        switch (y_dir)
-        {
-        case Y_DIR_DONT_MOVE:
-        {
+        switch (y_dir) {
+        case Y_DIR_DONT_MOVE: {
             // empty
             break;
         }
-        case Y_DIR_UP_MOVE:
-        {
+        case Y_DIR_UP_MOVE: {
             g_cursor_y -= 1;
             g_cursor_y &= ARGUMENT_MASK;
             break;
         }
-        case Y_DIR_DOWN_MOVE:
-        {
+        case Y_DIR_DOWN_MOVE: {
             g_cursor_y += 1;
             g_cursor_y &= ARGUMENT_MASK;
             break;
         }
-        default:
-        {
+        default: {
             assert(0);
             break;
         }
         }
 
-        switch (x_dir)
-        {
-        case X_DIR_DONT_MOVE:
-        {
+        switch (x_dir) {
+        case X_DIR_DONT_MOVE: {
             // empty
             break;
         }
-        case X_DIR_RIGHT_MOVE:
-        {
+        case X_DIR_RIGHT_MOVE: {
             g_cursor_x += 1;
             g_cursor_x &= ARGUMENT_MASK;
             break;
         }
-        case X_DIR_LEFT_MOVE:
-        {
+        case X_DIR_LEFT_MOVE: {
             g_cursor_x -= 1;
             g_cursor_x &= ARGUMENT_MASK;
             break;
         }
-        default:
-        {
+        default: {
             assert(0);
             break;
         }
@@ -426,8 +374,7 @@ void execute(unsigned char instruction)
 
         break;
     }
-    default:
-    {
+    default: {
         assert(0);
         break;
     }
