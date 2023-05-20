@@ -1,1 +1,0 @@
-start .\POBS-Win\POBS.exe
