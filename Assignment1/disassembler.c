@@ -96,8 +96,8 @@ typedef enum opcode_mode {
 } opcode_mode_t;
 
 typedef struct opcode_info {
-    char* opcode_name;
-    char* mode_name;
+    const char* opcode_name;
+    const char* mode_name;
     opcode_mode_t mode;
 } opcode_info_t;
 
