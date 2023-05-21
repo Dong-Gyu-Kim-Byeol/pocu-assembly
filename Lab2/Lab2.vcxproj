@@ -19,6 +19,9 @@
   <PropertyGroup Label="Configuration" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
+  <PropertyGroup Label="Configuration" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
   <Import Project="..\props\Common.props" />
   <Import Project="..\props\WindowsTargetPlatform.props" />
   <Import Project="..\props\PlatformToolset.props" />
