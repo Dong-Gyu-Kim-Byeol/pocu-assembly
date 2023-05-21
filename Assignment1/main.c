@@ -3,8 +3,6 @@
 #include <assert.h>
 #include <string.h>
 
-#include <stdio.h>
-
 int test1(void)
 {
     const unsigned char mem[] = { 0x18, 0xA9, 0x05, 0x6D, 0x10, 0x20, 0x8D, 0x00, 0x10 };
