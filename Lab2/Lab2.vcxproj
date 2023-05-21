@@ -16,6 +16,9 @@
     <ProjectGuid>{778fdd40-5490-488f-8e73-deb4a1cbe60c}</ProjectGuid>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Label="Configuration" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
   <Import Project="..\props\Common.props" />
   <Import Project="..\props\WindowsTargetPlatform.props" />
   <Import Project="..\props\PlatformToolset.props" />
@@ -36,6 +39,9 @@
   <ItemGroup>
     <ClInclude Include="canvas.h" />
     <ClInclude Include="palette.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include=".editorconfig" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
