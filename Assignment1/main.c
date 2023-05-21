@@ -31,7 +31,7 @@ int test1(void)
 
 void homecoder_test(void)
 {
-    // ��� ���ɾ �׽�Ʈ �մϴ�. ��, operand �κ��� �������� ���� �����̹Ƿ� �ùٸ� �׽�Ʈ ���� �ƴ� ���� �ֽ��ϴ�.
+    // 모든 명령어를 테스트 합니다. 단, operand 부분은 무작위로 만든 숫자이므로 올바른 테스트 값은 아닐 수도 있습니다.
 
     enum {
         BUFFER_SIZE = 64

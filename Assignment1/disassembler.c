@@ -1,6 +1,7 @@
 #include "disassembler.h"
 
 #include <assert.h>
+#include <stdio.h>
 
 // instruction
 const char* const BRK = "brk";
@@ -61,37 +62,37 @@ const char* const INC = "inc";
 const char* const NOP = "nop";
 
 // mode
-const char* const ACCUMULATOR = "A"; // ´©»ê±â(accumulator, A ·¹Áö½ºÅÍ)
-const char* const IMMEDIATE = "#"; // Áï½Ã(immediate)
-const char* const ABSOLUTE = "a"; // Àı´ë(absolute) ÁÖ¼Ò
-const char* const ZERO_PAGE = "zp"; // Á¦·Î ÆäÀÌÁö(zero page) ÁÖ¼Ò
-const char* const IMPLIED = "i"; // ¹¬½ÃÀû(implied)
-const char* const RELATIVE = "r"; // »ó´ë(relative) ÁÖ¼Ò
-const char* const ABSOLUTE_INDIRECT = "(a)"; // Àı´ë °£Á¢(absolute indirect) ÁÖ¼Ò
-const char* const ABSOLUTE_INDEXED_WITH_X = "a,x"; // Àı´ë ÁÖ¼Ò + x
-const char* const ABSOLUTE_INDEXED_WITH_Y = "a,y"; // Àı´ë ÁÖ¼Ò + y
-const char* const ZERO_PAGE_INDEXED_WITH_X = "zp,x"; // Á¦·Î ÆäÀÌÁö ÁÖ¼Ò + x
-const char* const ZERO_PAGE_INDEXED_WITH_Y = "zp,y"; // Á¦·Î ÆäÀÌÁö ÁÖ¼Ò + y
-const char* const ZERO_PAGE_INDEXED_INDIRECT = "(zp,x)"; // »öÀÎ ÈÄ °£Á¢ ÂüÁ¶
-const char* const ZERO_PAGE_INDIRECT_INDEXED_WITH_Y = "(zp),y"; // °£Á¢ ÂüÁ¶ ÈÄ »öÀÎ
+const char* const ACCUMULATOR = "A"; // ëˆ„ì‚°ê¸°(accumulator, A ë ˆì§€ìŠ¤í„°)
+const char* const IMMEDIATE = "#"; // ì¦‰ì‹œ(immediate)
+const char* const ABSOLUTE = "a"; // ì ˆëŒ€(absolute) ì£¼ì†Œ
+const char* const ZERO_PAGE = "zp"; // ì œë¡œ í˜ì´ì§€(zero page) ì£¼ì†Œ
+const char* const IMPLIED = "i"; // ë¬µì‹œì (implied)
+const char* const RELATIVE = "r"; // ìƒëŒ€(relative) ì£¼ì†Œ
+const char* const ABSOLUTE_INDIRECT = "(a)"; // ì ˆëŒ€ ê°„ì ‘(absolute indirect) ì£¼ì†Œ
+const char* const ABSOLUTE_INDEXED_WITH_X = "a,x"; // ì ˆëŒ€ ì£¼ì†Œ + x
+const char* const ABSOLUTE_INDEXED_WITH_Y = "a,y"; // ì ˆëŒ€ ì£¼ì†Œ + y
+const char* const ZERO_PAGE_INDEXED_WITH_X = "zp,x"; // ì œë¡œ í˜ì´ì§€ ì£¼ì†Œ + x
+const char* const ZERO_PAGE_INDEXED_WITH_Y = "zp,y"; // ì œë¡œ í˜ì´ì§€ ì£¼ì†Œ + y
+const char* const ZERO_PAGE_INDEXED_INDIRECT = "(zp,x)"; // ìƒ‰ì¸ í›„ ê°„ì ‘ ì°¸ì¡°
+const char* const ZERO_PAGE_INDIRECT_INDEXED_WITH_Y = "(zp),y"; // ê°„ì ‘ ì°¸ì¡° í›„ ìƒ‰ì¸
 
 const char* const EMPTY_STRING = "";
 
 typedef enum opcode_mode {
     OPCODE_MODE_UNSPECIFIED,
-    OPCODE_MODE_ACCUMULATOR, // ´©»ê±â(accumulator, A ·¹Áö½ºÅÍ)
-    OPCODE_MODE_IMMEDIATE, // Áï½Ã(immediate)
-    OPCODE_MODE_ABSOLUTE, // Àı´ë(absolute) ÁÖ¼Ò
-    OPCODE_MODE_ZERO_PAGE, // Á¦·Î ÆäÀÌÁö(zero page) ÁÖ¼Ò
-    OPCODE_MODE_IMPLIED, // ¹¬½ÃÀû(implied)
-    OPCODE_MODE_RELATIVE, // »ó´ë(relative) ÁÖ¼Ò
-    OPCODE_MODE_ABSOLUTE_INDIRECT, // Àı´ë °£Á¢(absolute indirect) ÁÖ¼Ò
-    OPCODE_MODE_ABSOLUTE_INDEXED_WITH_X, // Àı´ë ÁÖ¼Ò + x
-    OPCODE_MODE_ABSOLUTE_INDEXED_WITH_Y, // Àı´ë ÁÖ¼Ò + y
-    OPCODE_MODE_ZERO_PAGE_INDEXED_WITH_X, // Á¦·Î ÆäÀÌÁö ÁÖ¼Ò + x
-    OPCODE_MODE_ZERO_PAGE_INDEXED_WITH_Y, // Á¦·Î ÆäÀÌÁö ÁÖ¼Ò + y
-    OPCODE_MODE_ZERO_PAGE_INDEXED_INDIRECT, // »öÀÎ ÈÄ °£Á¢ ÂüÁ¶
-    OPCODE_MODE_ZERO_PAGE_INDIRECT_INDEXED_WITH_Y // °£Á¢ ÂüÁ¶ ÈÄ »öÀÎ
+    OPCODE_MODE_ACCUMULATOR, // ëˆ„ì‚°ê¸°(accumulator, A ë ˆì§€ìŠ¤í„°)
+    OPCODE_MODE_IMMEDIATE, // ì¦‰ì‹œ(immediate)
+    OPCODE_MODE_ABSOLUTE, // ì ˆëŒ€(absolute) ì£¼ì†Œ
+    OPCODE_MODE_ZERO_PAGE, // ì œë¡œ í˜ì´ì§€(zero page) ì£¼ì†Œ
+    OPCODE_MODE_IMPLIED, // ë¬µì‹œì (implied)
+    OPCODE_MODE_RELATIVE, // ìƒëŒ€(relative) ì£¼ì†Œ
+    OPCODE_MODE_ABSOLUTE_INDIRECT, // ì ˆëŒ€ ê°„ì ‘(absolute indirect) ì£¼ì†Œ
+    OPCODE_MODE_ABSOLUTE_INDEXED_WITH_X, // ì ˆëŒ€ ì£¼ì†Œ + x
+    OPCODE_MODE_ABSOLUTE_INDEXED_WITH_Y, // ì ˆëŒ€ ì£¼ì†Œ + y
+    OPCODE_MODE_ZERO_PAGE_INDEXED_WITH_X, // ì œë¡œ í˜ì´ì§€ ì£¼ì†Œ + x
+    OPCODE_MODE_ZERO_PAGE_INDEXED_WITH_Y, // ì œë¡œ í˜ì´ì§€ ì£¼ì†Œ + y
+    OPCODE_MODE_ZERO_PAGE_INDEXED_INDIRECT, // ìƒ‰ì¸ í›„ ê°„ì ‘ ì°¸ì¡°
+    OPCODE_MODE_ZERO_PAGE_INDIRECT_INDEXED_WITH_Y // ê°„ì ‘ ì°¸ì¡° í›„ ìƒ‰ì¸
 } opcode_mode_t;
 
 typedef struct opcode_info {
@@ -191,8 +192,8 @@ const unsigned char* disassemble(char* out_buffer64, const unsigned char* mem)
 }
 
 // out_buffer64
-// OPCODE=<¿ÉÄÚµå>[<´Ï¸ğ´Ğ> <ÁÖ¼ÒÁöÁ¤ ¸ğµå Ç¥±â>] OPERAND=<»óÀ§ ¹ÙÀÌÆ®> <ÇÏÀ§ ¹ÙÀÌÆ®>
-// »óÀ§ ¹ÙÀÌÆ®³ª ÇÏÀ§ ¹ÙÀÌÆ®°¡ ¾ø´Ù¸é ±× ´ë½Å ..¸¦ »ç¿ëÇÕ´Ï´Ù.
+// OPCODE=<ì˜µì½”ë“œ>[<ë‹ˆëª¨ë‹‰> <ì£¼ì†Œì§€ì • ëª¨ë“œ í‘œê¸°>] OPERAND=<ìƒìœ„ ë°”ì´íŠ¸> <í•˜ìœ„ ë°”ì´íŠ¸>
+// operandê°€ NULLì´ë©´ ê·¸ ëŒ€ì‹  ..ë¥¼ ì‚¬ìš©í•©ë‹ˆë‹¤.
 void ptint_disassemble(char* out_buffer64, const unsigned char opcode, const opcode_info_t opcode_info, const unsigned char* const operand1_or_null, const unsigned char* const operand2_or_null)
 {
     assert(out_buffer64 != NULL);
