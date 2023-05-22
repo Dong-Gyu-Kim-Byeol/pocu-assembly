@@ -5,7 +5,7 @@
 
 void test1(void)
 {
-    const unsigned char mem[] = { 0x18, 0xA9, 0x05, 0x6D, 0x10, 0x20, 0x8D, 0x00, 0x10 };
+    const unsigned char mem[] = { 0x18, 0xA9, 0x05, 0x6D, 0x10, 0x20, 0x8D, 0x00, 0x10, 0x02 };
     char buffer[64];
 
     const unsigned char* next = disassemble(buffer, mem);
@@ -27,6 +27,11 @@ void test1(void)
 
     assert(next == mem + 9);
     assert(strcmp("OPCODE=8D[sta a] OPERAND=10 00", buffer) == 0);
+
+    next = disassemble(buffer, next);
+
+    assert(next == mem + 9);
+    assert(strcmp("", buffer) == 0);
 }
 
 void homecoder_test(void)
