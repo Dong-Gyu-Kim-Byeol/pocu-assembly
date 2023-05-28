@@ -3,9 +3,6 @@ out_v = $2301
 out_z = $2302
 out_c = $2303
 
-    ldx #$FF
-    txs
-
     php
     pla
     tax
