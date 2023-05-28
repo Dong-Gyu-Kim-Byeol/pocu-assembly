@@ -3,9 +3,11 @@ out_v = $2301
 out_z = $2302
 out_c = $2303
 
-    lda #%11111111
-    ; php
-    ; pla
+    ldx #$FF
+    txs
+
+    php
+    pla
     tax
     
     ; n flag

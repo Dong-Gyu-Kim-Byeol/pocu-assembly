@@ -8,6 +8,9 @@ out_1 = $2301
 out_2 = $2302
 out_3 = $2303
 
+    ldx #$FF
+    txs
+
     lda num_3
     rol
     
