@@ -11,6 +11,7 @@ out_c = $2303
     ; n flag
     txa
     and #$80
+    clc
     rol
     rol
     sta out_n
@@ -18,6 +19,7 @@ out_c = $2303
     ; v flag
     txa
     and #$40
+    clc
     rol
     rol
     rol
@@ -32,5 +34,4 @@ out_c = $2303
     ; c flag
     txa
     and #$01
-    lsr
     sta out_c
