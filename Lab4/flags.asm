@@ -5,7 +5,6 @@ out_c = $2303
 
     php
     pla
-    php
     tax
     
     ; n flag
