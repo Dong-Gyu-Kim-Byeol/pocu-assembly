@@ -5,18 +5,19 @@ out_c = $2303
 
     php
     pla
+    php
     tax
     
     ; n flag
     txa
-    and #%10000000
+    and #$80
     rol
     rol
     sta out_n
 
     ; v flag
     txa
-    and #%01000000
+    and #$40
     rol
     rol
     rol
@@ -24,11 +25,12 @@ out_c = $2303
     
     ; z flag
     txa
-    and #%00000010
+    and #$02
     lsr
     sta out_z
 
     ; c flag
     txa
     and #$01
+    lsr
     sta out_c
