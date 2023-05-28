@@ -30,5 +30,5 @@ out_c = $2303
 
     ; c flag
     txa
-    and #%00000001
+    and #$01
     sta out_c
