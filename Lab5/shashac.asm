@@ -1,8 +1,8 @@
 buffer=$C000
 out=$2300
 
-temp=$01
 accum_last_index=$00
+temp=$01 ; $01 ~ $03
 
     ldx #$FF
     txs
@@ -11,7 +11,7 @@ accum_last_index=$00
     sta temp
     sta temp+1
     sta temp+2
-    sta temp+3
+    tay
     
     lda buffer
     asl
@@ -36,9 +36,9 @@ accum:
     eor buffer+4,x
     sta temp+2
 
-    lda temp+3
+    tya
     eor buffer+5,x
-    sta temp+3
+    tay
 
     dex
     dex
@@ -58,7 +58,8 @@ check:
     bit temp+2
     beq continue
 
-    bit temp+3
+    tya
+    bit buffer+1
     bne end
 
 continue:
@@ -77,10 +78,10 @@ continue:
     ora #1
     sta temp+2
 
-    lda temp+3
+    tya
     rol
     ora #1
-    sta temp+3
+    tay
 
     jmp round
 
@@ -91,5 +92,5 @@ end:
     sta out+1
     lda temp+2
     sta out+2
-    lda temp+3
+    tya
     sta out+3
