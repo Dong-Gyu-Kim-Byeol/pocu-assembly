@@ -8,7 +8,7 @@
     clc
     lda #$00
     pha
-    php
+    plp
     ;========================
 
     .INCLUDE "flags.asm"
@@ -26,7 +26,7 @@
     clc
     lda #$80
     pha
-    php
+    plp
     ;========================
 
     .INCLUDE "flags.asm"
@@ -44,7 +44,7 @@
     clc ; OverflowSet
     lda #$40
     pha
-    php
+    plp
     ;========================
 
     .INCLUDE "flags.asm"
@@ -62,7 +62,7 @@
     clc ; ZeroSet
     lda #$02
     pha
-    php
+    plp
     ;========================
 
     .INCLUDE "flags.asm"
@@ -80,7 +80,7 @@
     clc ; CarrySet
     lda #$01
     pha
-    php
+    plp
     ;========================
 
     .INCLUDE "flags.asm"
@@ -98,7 +98,7 @@
     clc
     lda #%00000011
     pha
-    php
+    plp
     ;========================
 
     .INCLUDE "flags.asm"
@@ -114,7 +114,7 @@
     clc
     lda #%10000001
     pha
-    php
+    plp
     ;========================
 
     .INCLUDE "flags.asm"
@@ -130,7 +130,7 @@
     clc
     lda #%10000010
     pha
-    php
+    plp
     ;========================
 
     .INCLUDE "flags.asm"
@@ -146,7 +146,7 @@
     clc
     lda #%11000000
     pha
-    php
+    plp
     ;========================
 
     .INCLUDE "flags.asm"
@@ -162,7 +162,7 @@
     clc
     lda #%01000001
     pha
-    php
+    plp
     ;========================
 
     .INCLUDE "flags.asm"
@@ -178,7 +178,7 @@
     clc
     lda #%01000010
     pha
-    php
+    plp
     ;========================
 
     .INCLUDE "flags.asm"
@@ -196,7 +196,7 @@
     clc
     lda #%10000011
     pha
-    php
+    plp
     ;========================
 
     .INCLUDE "flags.asm"
@@ -212,7 +212,7 @@
     clc
     lda #%01000011
     pha
-    php
+    plp
     ;========================
 
     .INCLUDE "flags.asm"
@@ -228,7 +228,7 @@
     clc
     lda #%11000010
     pha
-    php
+    plp
     ;========================
 
     .INCLUDE "flags.asm"
@@ -244,7 +244,7 @@
     clc
     lda #%11000001
     pha
-    php
+    plp
     ;========================
 
     .INCLUDE "flags.asm"

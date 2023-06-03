@@ -9,25 +9,23 @@ out_c = $2303
     
     ; n flag
     txa
-    and #$80
-    clc
     rol
     rol
+    and #$01
     sta out_n
 
     ; v flag
     txa
-    and #$40
-    clc
     rol
     rol
     rol
+    and #$01
     sta out_v
     
     ; z flag
     txa
-    and #$02
     lsr
+    and #$01
     sta out_z
 
     ; c flag
