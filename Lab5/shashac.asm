@@ -16,10 +16,12 @@ count=$00
     lda buffer
     asl
     asl
+    sec
+    sbc #4
     sta count
 
 round:
-    ldx #0
+    ldx count
 
 accum:
     lda temp
@@ -38,12 +40,11 @@ accum:
     eor buffer+5,x
     sta temp+3
 
-    inx
-    inx
-    inx
-    inx
-    cpx count
-    bcc accum
+    dex
+    dex
+    dex
+    dex
+    bpl accum
 
 check:
     lda buffer+1
