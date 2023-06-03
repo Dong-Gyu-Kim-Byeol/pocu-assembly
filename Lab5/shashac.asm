@@ -2,7 +2,7 @@ buffer=$C000
 out=$2300
 
 temp=$01
-count=$00
+accum_last_index=$00
 
     ldx #$FF
     txs
@@ -18,10 +18,10 @@ count=$00
     asl
     sec
     sbc #4
-    sta count
+    sta accum_last_index
 
 round:
-    ldx count
+    ldx accum_last_index
 
 accum:
     lda temp
