@@ -46,22 +46,18 @@ accum:
     bcc accum
 
 check:
-    ldy buffer+1
+    lda buffer+1
 
-    tya
-    and temp
+    bit temp
     beq continue
     
-    tya
-    and temp+1
+    bit temp+1
     beq continue
 
-    tya
-    and temp+2
+    bit temp+2
     beq continue
 
-    tya
-    and temp+3
+    bit temp+3
     bne end
 
 continue:
