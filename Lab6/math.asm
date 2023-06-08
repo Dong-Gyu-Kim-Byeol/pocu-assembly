@@ -120,6 +120,7 @@ minmax: ; (num0, num1) -> min, max | <P, temp+2, temp+3, temp+4, temp+5>
 
     ; max ret
     txa
+    tsx
     sta PG1+2,x
 
     ; min ret
