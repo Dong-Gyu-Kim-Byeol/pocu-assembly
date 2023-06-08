@@ -20,8 +20,10 @@ min: ; (num0, num1) -> min | <P, temp, temp+1>
 ; 이 함수를 사용할 때 스택 정리는 호출자(caller)가 합니다.
 ; =========================================================
     .SUBROUTINE
-    sta temp
-    stx temp+1
+.a=temp
+.x=temp+1
+    sta .a
+    stx .x
 
     tsx
 
@@ -29,18 +31,18 @@ min: ; (num0, num1) -> min | <P, temp, temp+1>
     sec
     cmp PG1+3,x ; S[1] - S[0]
 
-    bcs min_ret_s0 ; S[1] >= S[0]
+    bcs .ret_num0 ; S[1] >= S[0]
 
     sta ret ; S[1]
-    jmp min_end
+    jmp .end
 
-min_ret_s0:
+.ret_num0:
     lda PG1+3,x ; S[0]
     sta ret
 
-min_end:
-    lda temp
-    ldx temp+1
+.end:
+    lda .a
+    ldx .x
 
     rts
 
@@ -57,21 +59,22 @@ max: ; (num0, num1) -> max | <X, P, temp>
 ; num0와 num1 중 더 큰 숫자를 반환합니다.
 ; =========================================================
     .SUBROUTINE
-    sta temp
+.a=temp
+    sta .a
 
     lda num0
     cmp num1 ; num0 - num1
 
-    bcc max_ret_num1 ; num0 < num1
+    bcc .ret_num1 ; num0 < num1
     tax
-    jmp max_end
+    jmp .end
 
-max_ret_num1:
+.ret_num1:
     lda num1
     tax
 
-max_end:
-    lda temp
+.end:
+    lda .a
 
     rts
 
@@ -90,16 +93,18 @@ minmax: ; (num0, num1) -> min, max | <P, temp+2, temp+3, temp+4, temp+5>
 ; 이 함수를 사용할 때 스택 정리는 함수(callee)가 합니다.
 ; =========================================================
     .SUBROUTINE
-ret_addr_l=temp+4
-ret_addr_h=temp+5
+.a=temp+2
+.x=temp+3
+.ret_addr_l=temp+4
+.ret_addr_h=temp+5
 
-    sta temp+2
-    stx temp+3
+    sta .a
+    stx .x
 
     pla
-    sta ret_addr_l
+    sta .ret_addr_l
     pla
-    sta ret_addr_h
+    sta .ret_addr_h
 
     ; min
     jsr min
@@ -119,14 +124,14 @@ ret_addr_h=temp+5
     lda ret
     pha
 
-minmax_end:
-    lda ret_addr_h
+.end:
+    lda .ret_addr_h
     pha
-    lda ret_addr_l
+    lda .ret_addr_l
     pha
 
-    lda temp+2
-    ldx temp+3
+    lda .a
+    ldx .x
 
     rts
 
@@ -143,32 +148,34 @@ mmref: ; (num0, num1, out_min, out_max) | <P, temp+2, temp+3, temp+4, temp+5, te
 ; 이 함수를 사용할 때 스택 정리는 함수(callee)가 합니다.
 ; =========================================================
     .SUBROUTINE
-ret_addr_l=temp+4
-ret_addr_h=temp+5
-out_min_l=temp+6
-out_min_h=temp+7
-out_max_l=temp+8
-out_max_h=temp+9
+.a=temp+2
+.x=temp+3
+.ret_addr_l=temp+4
+.ret_addr_h=temp+5
+.out_min_l=temp+6
+.out_min_h=temp+7
+.out_max_l=temp+8
+.out_max_h=temp+9
 
-    sta temp+2
-    stx temp+3
+    sta .a
+    stx .x
 
     pla
-    sta ret_addr_l
+    sta .ret_addr_l
     pla
-    sta ret_addr_h
+    sta .ret_addr_h
     
     pla
     sta num1
 
     pla
-    sta out_min_l
+    sta .out_min_l
     pla
-    sta out_min_h
+    sta .out_min_h
     pla
-    sta out_max_l
+    sta .out_max_l
     pla
-    sta out_max_h
+    sta .out_max_h
 
     ; min
     lda num1
@@ -185,19 +192,19 @@ out_max_h=temp+9
     ; max ret
     txa
     ldx #0
-    sta (out_max_l,x)
+    sta (.out_max_l,x)
 
     ; min ret
     lda ret
-    sta (out_min_l,x)
+    sta (.out_min_l,x)
 
-mmref_end:
-    lda ret_addr_h
+.end:
+    lda .ret_addr_h
     pha
-    lda ret_addr_l
+    lda .ret_addr_l
     pha
 
-    lda temp+2
-    ldx temp+3
+    lda .a
+    ldx .x
 
     rts
