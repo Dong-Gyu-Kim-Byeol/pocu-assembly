@@ -45,6 +45,7 @@ min: ; (num0, num1) -> min | <P, temp, temp+1>
     ldx .x
 
     rts
+; =========================================================
 
 
 max: ; (num0, num1) -> max | <X, P, temp>
@@ -77,6 +78,7 @@ max: ; (num0, num1) -> max | <X, P, temp>
     lda .a
 
     rts
+; =========================================================
 
 
 minmax: ; (num0, num1) -> min, max | <P, temp+2, temp+3, temp+4, temp+5>
@@ -118,11 +120,12 @@ minmax: ; (num0, num1) -> min, max | <P, temp+2, temp+3, temp+4, temp+5>
 
     ; max ret
     txa
-    pha
+    tsx
+    sta PG1+2,x
 
     ; min ret
     lda ret
-    pha
+    sta PG1+1,x
 
 .end:
     lda .ret_addr_h
@@ -134,6 +137,7 @@ minmax: ; (num0, num1) -> min, max | <P, temp+2, temp+3, temp+4, temp+5>
     ldx .x
 
     rts
+; =========================================================
 
 
 mmref: ; (num0, num1, out_min, out_max) | <P, temp+2, temp+3, temp+4, temp+5, temp+6, temp+7, temp+8, temp+9>
@@ -208,3 +212,4 @@ mmref: ; (num0, num1, out_min, out_max) | <P, temp+2, temp+3, temp+4, temp+5, te
     ldx .x
 
     rts
+; =========================================================
