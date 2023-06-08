@@ -25,7 +25,7 @@ round:
 
 accum:
     lda temp
-    eor buffer+2,x
+    eor buffer+2,x ; eor만을 위한 루프를 먼저 시행해서 eor를 구하고 accum을 루프 없이 계산 가능하다.
     sta temp
 
     lda temp+1
@@ -63,7 +63,7 @@ check:
     bne end
 
 continue:
-    lda temp
+    lda temp ; "sec" 후 "rol temp" 2개로 가능하다.
     asl
     ora #1
     sta temp
