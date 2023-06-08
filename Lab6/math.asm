@@ -120,25 +120,17 @@ minmax: ; (num0, num1) -> min, max | <P, , g_temp, , g_temp+1, g_temp+2, g_temp+
     cmp .num1 ; .num0 - .num1
     bcs .min_num1 ; .num0 >= .num1
 
+    ; .num0 < .num1
     sta PG1+1,x
-    jmp .max
-
-.min_num1:
     lda .num1
-    sta PG1+1,x
-
-.max:
-    lda .num0
-    sec
-    cmp .num1 ; .num0 - .num1
-
-    bcc .max_num1 ; .num0 < .num1
     sta PG1+2,x
     jmp .end
 
-.max_num1:
-    lda .num1
+.min_num1:
+    ; .num0 >= .num1
     sta PG1+2,x
+    lda .num1
+    sta PG1+1,x
 
 .end:
     lda .ret_addr_h
@@ -202,25 +194,17 @@ mmref: ; (num0, num1, out_min, out_max) | <P, g_temp, g_temp+1 g_temp+2, g_temp+
     cmp .num1 ; g_num0 - .num1
     bcs .min_num1 ; g_num0 >= .num1
 
+    ; g_num0 < .num1
     sta (.out_min_l,x)
-    jmp .max
-
-.min_num1:
     lda .num1
-    sta (.out_min_l,x)
-
-.max:
-    lda g_num0
-    sec
-    cmp .num1 ; g_num0 - .num1
-    bcc .max_num1 ; g_num0 < .num1
-
     sta (.out_max_l,x)
     jmp .end
 
-.max_num1:
-    lda .num1
+.min_num1:
+    ; g_num0 >= .num1
     sta (.out_max_l,x)
+    lda .num1
+    sta (.out_min_l,x)
 
 .end:
     lda .ret_addr_h
