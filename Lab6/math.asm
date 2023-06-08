@@ -115,6 +115,7 @@ minmax: ; (num0, num1) -> min, max | <P, , g_temp, , g_temp+1, g_temp+2, g_temp+
     sta .num0
     tsx
 
+; 함수 재사용 없이 최대한 사이클을 줄일 수 있다.
 .min:
     sec
     cmp .num1 ; .num0 - .num1
@@ -188,6 +189,7 @@ mmref: ; (num0, num1, out_min, out_max) | <P, g_temp, g_temp+1 g_temp+2, g_temp+
     sta .out_max_h
     ldx #0
 
+; 함수 재사용 없이 최대한 사이클을 줄일 수 있다.
 .min:
     lda g_num0
     sec
