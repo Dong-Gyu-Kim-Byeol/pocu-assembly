@@ -141,10 +141,15 @@ minmax: ; (num0, num1) -> min, max | <P, , g_temp, , g_temp+1, g_temp+2, g_temp+
     sta PG1+2,x
 
 .end:
+    lda .ret_addr_h
+    pha
+    lda .ret_addr_l
+    pha
+
     lda .a
     ldx .x
 
-    jmp (.ret_addr_l)
+    rts
 ; =========================================================
 
 
@@ -218,8 +223,13 @@ mmref: ; (num0, num1, out_min, out_max) | <P, g_temp, g_temp+1 g_temp+2, g_temp+
     sta (.out_max_l,x)
 
 .end:
+    lda .ret_addr_h
+    pha
+    lda .ret_addr_l
+    pha
+
     lda .a
     ldx .x
 
-    jmp (.ret_addr_l)
+    rts
 ; =========================================================
