@@ -118,14 +118,16 @@ minmax: ; (num0, num1) -> min, max | <P, temp+2, temp+3, temp+4, temp+5>
     sta num0
     jsr max
 
+    pla
+    pla
+
     ; max ret
     txa
-    tsx
-    sta PG1+2,x
+    pha
 
     ; min ret
     lda ret
-    sta PG1+1,x
+    pha
 
 .end:
     lda .ret_addr_h
