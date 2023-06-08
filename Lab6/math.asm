@@ -171,8 +171,17 @@ mmref: ; (num0, num1, out_min, out_max) | <P, temp+2, temp+3, temp+4, temp+5, te
     pla
     sta .ret_addr_h
     
+    lda num0
+    pha
+
+    ; min
+    jsr min
     pla
+    pla
+
+    ; max
     sta num1
+    jsr max
 
     pla
     sta .out_min_l
@@ -182,18 +191,6 @@ mmref: ; (num0, num1, out_min, out_max) | <P, temp+2, temp+3, temp+4, temp+5, te
     sta .out_max_l
     pla
     sta .out_max_h
-
-    ; min
-    lda num1
-    pha
-    lda num0
-    pha
-    jsr min
-    pla
-    pla
-
-    ; max
-    jsr max
 
     ; max ret
     txa
