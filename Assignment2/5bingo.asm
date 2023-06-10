@@ -11,7 +11,7 @@ g_ret=$01
 
 callnum: ; (num) -> -
 ;==================================
-; summary: 빙고 판에서 num을 찾아 불린 번호로 표시를 합니다.
+; summary: 빙고 판에서 num을 찾아 불린 번호로 표시 합니다.
 ;            
 ; arguments: num : g_num
 ;
@@ -54,7 +54,7 @@ callnum: ; (num) -> -
 
     .MACRO callnum_entry ; (g_board_index) -> -
     ;==================================
-    ; summary: g_board+g_board_index가 g_num과 동일하면 call 표시를 합니다.
+    ; summary: g_board+g_board_index가 g_num과 동일하면 불린 번호로 표시 합니다.
     ;            
     ; arguments: g_board_index
     ;
@@ -88,8 +88,6 @@ won: ; (num) -> -
     .SUBROUTINE
 .WON=$01
 .NOT_WON=$00
-
-    lda #G_CALL_NUM_MASK
 
 won_check_horizontal_1:
     won_entry 0+0,won_check_horizontal_2
@@ -182,18 +180,20 @@ won_check_vertical_5:
     jmp .won_end
 
 won_check_cross_1:
+    won_entry 10+2,won_not_won_end
+
     won_entry 0,won_check_cross_2
     won_entry 5+1,won_check_cross_2
-    won_entry 10+2,won_check_cross_2
     won_entry 15+3,won_check_cross_2
     won_entry 20+4,won_check_cross_2
 
     jmp .won_end
     
 won_check_cross_2:
+    won_entry 10+2,won_not_won_end
+    
     won_entry 0+4,won_not_won_end
     won_entry 5+3,won_not_won_end
-    won_entry 10+2,won_not_won_end
     won_entry 15+1,won_not_won_end
     won_entry 20+0,won_not_won_end
 
@@ -221,7 +221,7 @@ won_not_won_end:
     ;
     ; modifies: A, P
     ;==================================        
-        bit g_board+{1}
-        beq {2}
+        lda g_board+{1}
+        bmi {2}
     .ENDM
     ;==================================
