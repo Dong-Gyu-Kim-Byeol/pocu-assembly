@@ -20,6 +20,8 @@ callnum: ; (num) -> -
 ; modifies: A, P, g_board
 ;==================================
     .SUBROUTINE
+
+    lda g_num
     
     callnum_entry 0
     callnum_entry 1
@@ -60,12 +62,12 @@ callnum: ; (num) -> -
     ;
     ; modifies: A, P, g_board+g_board_index
     ;==================================
-        lda g_board+{1}
         sec
-        cmp g_num
+        cmp g_board+{1}
         bne callnum_entry_{1}_end
         ora #G_CALL_NUM_MASK
         sta g_board+{1}
+        eor #G_CALL_NUM_MASK
 
 callnum_entry_{1}_end:
     .ENDM
@@ -86,6 +88,8 @@ won: ; (num) -> -
     .SUBROUTINE
 .WON=$01
 .NOT_WON=$00
+
+    lda #G_CALL_NUM_MASK
 
 won_check_horizontal_1:
     won_entry 0+0,won_check_horizontal_2
@@ -216,9 +220,8 @@ won_not_won_end:
     ; returns: -
     ;
     ; modifies: A, P
-    ;==================================
-        lda g_board+{1}
-        and #G_CALL_NUM_MASK
+    ;==================================        
+        bit g_board+{1}
         beq {2}
     .ENDM
     ;==================================
