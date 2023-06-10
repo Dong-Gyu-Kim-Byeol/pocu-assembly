@@ -26,6 +26,7 @@ callnum: ; (btbl, n, num) -> -
 .btbl_addr_h=g_temp+3
 .n=g_temp+4
 .num=g_temp+5
+.t_count=g_temp+5
 
     pla
     sta .ret_addr_l
@@ -39,12 +40,13 @@ callnum: ; (btbl, n, num) -> -
 
     pla
     sta .n
+    sta .t_count
 
     pla
     sta .num
 
     ; first_set_loop
-    ldx .n
+    tax
 
     ldy .n
     dey
@@ -52,26 +54,26 @@ callnum: ; (btbl, n, num) -> -
     jmp .loop
 
 .set_loop:
-    dex
+    dec .t_count
     beq .end
+
+    ldy .n
+    dey
 
     lda .btbl_addr_l
     clc
     adc .n
     sta .btbl_addr_l
+    bcc .loop
     lda .btbl_addr_h
     adc #0
     sta .btbl_addr_h
 
-    ldy .n
-    dey
-
 .loop:
-    lda (.btbl_addr_l),y
+    txa
     sec
-    cmp .num
+    cmp (.btbl_addr_l),y
     bne .loop_2
-
     ora #G_CALL_NUM_MASK
     sta (.btbl_addr_l),y
 

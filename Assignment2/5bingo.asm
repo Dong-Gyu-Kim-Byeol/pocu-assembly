@@ -17,11 +17,13 @@ callnum: ; (num) -> -
 ;
 ; returns: -
 ;
-; modifies: A, P, g_board
+; modifies: A, X, P, g_board
 ;==================================
     .SUBROUTINE
 
     lda g_num
+    tax
+    ora #G_CALL_NUM_MASK
     
     callnum_entry 0
     callnum_entry 1
@@ -60,14 +62,12 @@ callnum: ; (num) -> -
     ;
     ; returns: -
     ;
-    ; modifies: A, P, g_board+g_board_index
+    ; modifies: P, g_board+g_board_index
     ;==================================
         sec
-        cmp g_board+{1}
+        cpx g_board+{1}
         bne callnum_entry_{1}_end
-        ora #G_CALL_NUM_MASK
         sta g_board+{1}
-        eor #G_CALL_NUM_MASK
 
 callnum_entry_{1}_end:
     .ENDM
@@ -90,11 +90,47 @@ won: ; (num) -> -
 .NOT_WON=$00
 
 won_check_horizontal_1:
-    won_entry 0+0,won_check_vertical_1
-    won_entry 0+1,won_check_vertical_2
-    won_entry 0+2,won_check_vertical_3
-    won_entry 0+3,won_check_vertical_4
-    won_entry 0+4,won_check_vertical_5
+    won_entry 0+0,won_check_horizontal_2
+    won_entry 0+1,won_check_horizontal_2
+    won_entry 0+2,won_check_horizontal_2
+    won_entry 0+3,won_check_horizontal_2
+    won_entry 0+4,won_check_horizontal_2
+
+    jmp .won_end
+
+won_check_horizontal_2:
+    won_entry 5+0,won_check_horizontal_3
+    won_entry 5+1,won_check_horizontal_3
+    won_entry 5+2,won_check_horizontal_3
+    won_entry 5+3,won_check_horizontal_3
+    won_entry 5+4,won_check_horizontal_3
+
+    jmp .won_end
+
+won_check_horizontal_3:
+    won_entry 10+0,won_check_horizontal_4
+    won_entry 10+1,won_check_horizontal_4
+    won_entry 10+2,won_check_horizontal_4
+    won_entry 10+3,won_check_horizontal_4
+    won_entry 10+4,won_check_horizontal_4
+
+    jmp .won_end
+
+won_check_horizontal_4:
+    won_entry 15+0,won_check_horizontal_5
+    won_entry 15+1,won_check_horizontal_5
+    won_entry 15+2,won_check_horizontal_5
+    won_entry 15+3,won_check_horizontal_5
+    won_entry 15+4,won_check_horizontal_5
+
+    jmp .won_end
+
+won_check_horizontal_5:
+    won_entry 20+0,won_check_vertical_1
+    won_entry 20+1,won_check_vertical_1
+    won_entry 20+2,won_check_vertical_1
+    won_entry 20+3,won_check_vertical_1
+    won_entry 20+4,won_check_vertical_1
 
     jmp .won_end
 
@@ -135,46 +171,10 @@ won_check_vertical_4:
     jmp .won_end
 
 won_check_vertical_5:
-    won_entry 0+4,won_check_horizontal_2
-    won_entry 5+4,won_check_horizontal_2
-    won_entry 10+4,won_check_horizontal_2
-    won_entry 15+4,won_check_horizontal_2
-    won_entry 20+4,won_check_horizontal_2
-
-    jmp .won_end
-
-won_check_horizontal_2:
-    won_entry 5+0,won_check_horizontal_3
-    won_entry 5+1,won_check_horizontal_3
-    won_entry 5+2,won_check_horizontal_3
-    won_entry 5+3,won_check_horizontal_3
-    won_entry 5+4,won_check_horizontal_3
-
-    jmp .won_end
-
-won_check_horizontal_3:
-    won_entry 10+0,won_check_horizontal_4
-    won_entry 10+1,won_check_horizontal_4
-    won_entry 10+2,won_check_horizontal_4
-    won_entry 10+3,won_check_horizontal_4
-    won_entry 10+4,won_check_horizontal_4
-
-    jmp .won_end
-
-won_check_horizontal_4:
-    won_entry 15+0,won_check_horizontal_5
-    won_entry 15+1,won_check_horizontal_5
-    won_entry 15+2,won_check_horizontal_5
-    won_entry 15+3,won_check_horizontal_5
-    won_entry 15+4,won_check_horizontal_5
-
-    jmp .won_end
-
-won_check_horizontal_5:
-    won_entry 20+0,won_check_cross_1
-    won_entry 20+1,won_check_cross_1
-    won_entry 20+2,won_check_cross_1
-    won_entry 20+3,won_check_cross_1
+    won_entry 0+4,won_check_cross_1
+    won_entry 5+4,won_check_cross_1
+    won_entry 10+4,won_check_cross_1
+    won_entry 15+4,won_check_cross_1
     won_entry 20+4,won_check_cross_1
 
     jmp .won_end
