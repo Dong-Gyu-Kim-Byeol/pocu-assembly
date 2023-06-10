@@ -22,8 +22,6 @@ callnum: ; (num) -> -
     .SUBROUTINE
 
     lda g_num
-    tax
-    ora #G_CALL_NUM_MASK
     
     callnum_entry 0
     callnum_entry 1
@@ -65,9 +63,11 @@ callnum: ; (num) -> -
     ; modifies: P, g_board+g_board_index
     ;==================================
         sec
-        cpx g_board+{1}
+        cmp g_board+{1}
         bne callnum_entry_{1}_end
+        ora #G_CALL_NUM_MASK
         sta g_board+{1}
+        rts
 
 callnum_entry_{1}_end:
     .ENDM
