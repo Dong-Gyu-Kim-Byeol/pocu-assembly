@@ -1,5 +1,6 @@
 g_temp=$10 ; [$0010, $001F]
 
+PG1=$0100
 G_CALL_NUM_MASK=%10000000
 
 g_num=$00
@@ -74,7 +75,7 @@ callnum: ; (btbl, n, num) -> -
     bne .loop_2
     ora #G_CALL_NUM_MASK
     sta (.btbl_addr_l),y
-    rts
+    jmp .end
 
 .loop_2
     dey
@@ -107,37 +108,21 @@ won: ; (btbl, n) -> -
     .SUBROUTINE
 .WON=$01
 .NOT_WON=$00
-.ret_addr_l=g_temp
-.ret_addr_h=g_temp+1
-.btbl_addr_l=g_temp+2
-.btbl_addr_h=g_temp+3
-.n=g_temp+4
-.t_btbl_addr_l=g_temp+5
-.t_btbl_addr_h=g_temp+6
+.btbl_addr_l=g_temp
+.btbl_addr_h=g_temp+1
+.n=g_temp+2
+.t_btbl_addr_l=g_temp+3
+.t_btbl_addr_h=g_temp+4
 
-    pla
-    sta .ret_addr_l
-    pla
-    sta .ret_addr_h
+    tsx
 
-    pla
+    lda PG1+3,x
     sta .btbl_addr_l
-    pla
+    lda PG1+4,x
     sta .btbl_addr_h
 
-    pla
+    lda PG1+5,x
     sta .n
-
-    lda .n
-    pha
-    lda .btbl_addr_h
-    pha
-    lda .btbl_addr_l
-    pha
-    lda .ret_addr_h
-    pha
-    lda .ret_addr_l
-    pha
 
     ; .first_set_horizontal_loop
     lda .btbl_addr_l
@@ -170,8 +155,7 @@ won: ; (btbl, n) -> -
 
 .horizontal_loop:
     lda (.t_btbl_addr_l),y
-    and #G_CALL_NUM_MASK
-    beq .set_horizontal_loop
+    bmi .set_horizontal_loop
 
     dey
     bpl .horizontal_loop
@@ -215,8 +199,7 @@ won: ; (btbl, n) -> -
 
 .vertical_loop:
     lda (.t_btbl_addr_l),y
-    and #G_CALL_NUM_MASK
-    beq .set_vertical_loop
+    bmi .set_vertical_loop
 
     tya
     clc
@@ -240,8 +223,7 @@ won: ; (btbl, n) -> -
 
 .cross_left_top_to_right_bottom_loop:
     lda (.t_btbl_addr_l),y
-    and #G_CALL_NUM_MASK
-    beq .first_set_cross_left_bottom_to_right_top_loop
+    bmi .first_set_cross_left_bottom_to_right_top_loop
 
     lda .t_btbl_addr_l
     clc
@@ -269,21 +251,20 @@ won: ; (btbl, n) -> -
 
 .cross_left_bottom_to_right_top_loop:
     lda (.t_btbl_addr_l),y
-    and #G_CALL_NUM_MASK
-    beq .not_won_end
+    bmi .not_won_end
 
     lda .t_btbl_addr_l
     clc
     adc .n
     sta .t_btbl_addr_l
+    bcc .cross_left_bottom_to_right_top_loop_2
     lda .t_btbl_addr_h
     adc #0
     sta .t_btbl_addr_h
 
+.cross_left_bottom_to_right_top_loop_2:
     dey
     bmi .cross_left_bottom_to_right_top_loop
-
-    jmp .won_end
 
 .won_end:
     lda #.WON
