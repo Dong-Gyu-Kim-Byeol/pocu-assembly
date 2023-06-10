@@ -155,7 +155,7 @@ won: ; (btbl, n) -> -
 
 .horizontal_loop:
     lda (.t_btbl_addr_l),y
-    bmi .set_horizontal_loop
+    bpl .set_horizontal_loop
 
     dey
     bpl .horizontal_loop
@@ -199,7 +199,7 @@ won: ; (btbl, n) -> -
 
 .vertical_loop:
     lda (.t_btbl_addr_l),y
-    bmi .set_vertical_loop
+    bpl .set_vertical_loop
 
     tya
     clc
@@ -223,7 +223,7 @@ won: ; (btbl, n) -> -
 
 .cross_left_top_to_right_bottom_loop:
     lda (.t_btbl_addr_l),y
-    bmi .first_set_cross_left_bottom_to_right_top_loop
+    bpl .first_set_cross_left_bottom_to_right_top_loop
 
     lda .t_btbl_addr_l
     clc
@@ -251,7 +251,7 @@ won: ; (btbl, n) -> -
 
 .cross_left_bottom_to_right_top_loop:
     lda (.t_btbl_addr_l),y
-    bmi .not_won_end
+    bpl .not_won_end
 
     lda .t_btbl_addr_l
     clc
