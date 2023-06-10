@@ -247,7 +247,7 @@ won: ; (btbl, n) -> -
     adc .n
     sta .t_btbl_addr_l
     lda .t_btbl_addr_h
-    sbc #0
+    adc #0
     sta .t_btbl_addr_h
 
     iny
@@ -276,7 +276,7 @@ won: ; (btbl, n) -> -
     adc .n
     sta .t_btbl_addr_l
     lda .t_btbl_addr_h
-    sbc #0
+    adc #0
     sta .t_btbl_addr_h
 
     dey
