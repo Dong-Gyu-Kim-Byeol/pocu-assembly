@@ -1,11 +1,12 @@
-g_temp=$10 ; [$0010, $001F]
-
 PG1=$0100
+
 G_CALL_NUM_MASK=%10000000
 
 g_num=$00
 
 g_ret=$01
+
+g_temp=$10 ; [$0010, $001F]
 
 callnum: ; (btbl, n, num) -> -
 ;==================================
@@ -18,7 +19,7 @@ callnum: ; (btbl, n, num) -> -
 ;
 ; returns: -
 ;
-; modifies: A, X, Y, P, S, btbl
+; modifies: A, X, Y, P, S, btbl, g_temp, g_temp+1, g_temp+2, g_temp+3, g_temp+4, g_temp+5
 ;==================================
     .SUBROUTINE
 .ret_addr_l=g_temp
@@ -63,25 +64,27 @@ callnum: ; (btbl, n, num) -> -
     clc
     adc .n
     sta .btbl_addr_l
+    bcc .set_loop_2
     lda .btbl_addr_h
     adc #0
     sta .btbl_addr_h
-    
+
+.set_loop_2:
     lda .num
 
 .loop:
     sec
     cmp (.btbl_addr_l),y
-    bne .loop_2
-    ora #G_CALL_NUM_MASK
-    sta (.btbl_addr_l),y
-    jmp .end
+    beq .call_end
 
-.loop_2
     dey
     bpl .loop
 
     jmp .set_loop
+
+.call_end:
+    ora #G_CALL_NUM_MASK
+    sta (.btbl_addr_l),y
 
 .end:
     lda .ret_addr_h
@@ -103,7 +106,7 @@ won: ; (btbl, n) -> -
 ;
 ; returns: g_ret: 이겼다면 $01을 아니라면 $00을 반환합니다.
 ;
-; modifies: A, X, Y, P, g_ret
+; modifies: A, X, Y, P, g_ret, g_temp, g_temp+1, g_temp+2, g_temp+3, g_temp+4
 ;==================================
     .SUBROUTINE
 .WON=$01
@@ -229,10 +232,12 @@ won: ; (btbl, n) -> -
     clc
     adc .n
     sta .t_btbl_addr_l
+    bcc .cross_left_top_to_right_bottom_loop_2
     lda .t_btbl_addr_h
     adc #0
     sta .t_btbl_addr_h
 
+.cross_left_top_to_right_bottom_loop_2:
     iny
 
     dex

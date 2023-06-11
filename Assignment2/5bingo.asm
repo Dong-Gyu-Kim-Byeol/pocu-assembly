@@ -1,5 +1,3 @@
-g_temp=$10 ; [$0010, $001F]
-
 g_board=$80 ; 5x5 board
 G_MAX_BOARD_INDEX=24
 G_MAX_BOARD_LINE_INDEX=4
@@ -9,26 +7,28 @@ g_num=$00
 
 g_ret=$01
 
+g_temp=$10 ; [$0010, $001F]
+
 callnum: ; (num) -> -
 ;==================================
-; summary: 빙고 판에서 num을 찾아 불린 번호로 표시 합니다.
+; summary: 빙고판에서 num을 찾아 불린 번호로 표시 합니다.
 ;            
 ; arguments: num : g_num
 ;
 ; returns: -
 ;
-; modifies: A, X, P, g_board
+; modifies: A, P, g_board
 ;==================================
     .SUBROUTINE
 
-    callnum_n 5
+    callnum_n_if_call_rts 5
 
     rts
 ;==================================
 
-    .MACRO callnum_n ; (n) -> -
+    .MACRO callnum_n_if_call_rts ; (n) -> -
     ;==================================
-    ; summary: n x n 빙고판의 callnum을 수행합니다.
+    ; summary: n x n 빙고판에서 num을 찾아 불린 번호로 표시 합니다.
     ;
     ; arguments: n
     ;
@@ -41,14 +41,14 @@ callnum: ; (num) -> -
 N .SET {1}
 I .SET 0
     .REPEAT N*N
-        callnum_entry I
+        callnum_entry_if_call_rts I
 I .SET I+1
     .REPEND
     .ENDM
     ;==================================
 
 
-    .MACRO callnum_entry ; (g_board_index) -> -
+    .MACRO callnum_entry_if_call_rts ; (g_board_index) -> -
     ;==================================
     ; summary: g_board+g_board_index가 g_num과 동일하면 불린 번호로 표시 합니다.
     ;            
@@ -56,7 +56,7 @@ I .SET I+1
     ;
     ; returns: -
     ;
-    ; modifies: P, g_board+g_board_index
+    ; modifies: A, P, g_board+g_board_index
     ;==================================
         sec
         cmp g_board+{1}
@@ -71,7 +71,7 @@ I .SET I+1
 
 
 
-won: ; (num) -> -
+won: ; (num) -> is_won
 ;==================================
 ; summary: 현 플레이어가 이겼다면 $01을 아니라면 $00을 반환합니다.
 ;            
