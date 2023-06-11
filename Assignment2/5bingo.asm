@@ -21,36 +21,32 @@ callnum: ; (num) -> -
 ;==================================
     .SUBROUTINE
 
-    lda g_num
-    
-    callnum_entry 0
-    callnum_entry 1
-    callnum_entry 2
-    callnum_entry 3
-    callnum_entry 4
-    callnum_entry 5
-    callnum_entry 6
-    callnum_entry 7
-    callnum_entry 8
-    callnum_entry 9
-    callnum_entry 10
-    callnum_entry 11
-    callnum_entry 12
-    callnum_entry 13
-    callnum_entry 14
-    callnum_entry 15
-    callnum_entry 16
-    callnum_entry 17
-    callnum_entry 18
-    callnum_entry 19
-    callnum_entry 20
-    callnum_entry 21
-    callnum_entry 22
-    callnum_entry 23
-    callnum_entry 24
+    callnum_n 5
 
     rts
 ;==================================
+
+    .MACRO callnum_n ; (n) -> -
+    ;==================================
+    ; summary: n x n 빙고판의 callnum을 수행합니다.
+    ;
+    ; arguments: n
+    ;
+    ; returns: -
+    ;
+    ; modifies: A, P, g_board
+    ;==================================
+        lda g_num
+
+N .SET {1}
+I .SET 0
+    .REPEAT N*N
+        callnum_entry I
+I .SET I+1
+    .REPEND
+    .ENDM
+    ;==================================
+
 
     .MACRO callnum_entry ; (g_board_index) -> -
     ;==================================
@@ -64,12 +60,12 @@ callnum: ; (num) -> -
     ;==================================
         sec
         cmp g_board+{1}
-        bne callnum_entry_{1}_end
+        bne .end
         ora #G_CALL_NUM_MASK
         sta g_board+{1}
         rts
 
-callnum_entry_{1}_end:
+.end:
     .ENDM
     ;==================================
 

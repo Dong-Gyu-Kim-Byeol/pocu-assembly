@@ -264,7 +264,7 @@ won: ; (btbl, n) -> -
 
 .cross_left_bottom_to_right_top_loop_2:
     dey
-    bmi .cross_left_bottom_to_right_top_loop
+    bpl .cross_left_bottom_to_right_top_loop
 
 .won_end:
     lda #.WON
