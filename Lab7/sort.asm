@@ -37,9 +37,6 @@ str_buf DB 255 DUP ("$")
 
     mov dx, cx
 
-    mov si, cx
-    mov BYTE PTR [bx+1+si], "$"
-
 out_loop_str:
 
 in_loop_str:
