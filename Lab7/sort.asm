@@ -17,17 +17,28 @@ str_buf DB 255 DUP ("$")
     call read_string
     add sp, 2
 
-    ; set str len
-    mov al, BYTE PTR str_len+1
-    mov ah, 0
-    mov str_len, ax
+    ; dx = str len
+    mov dl, BYTE PTR str_len+1
+    mov dh, 0
+
+    ; set str last "$"
+    mov di, dx
+    mov str_buf[di], "$"
+    
+    or di, 0
+    jz print
 
     ; sort
     lea bx, str_buf
     
-    mov cx, str_len
+    mov cx, dx
     dec cx
-    mov str_len, cx
+    jz print
+
+    mov dx, cx
+
+    mov si, cx
+    mov BYTE PTR [bx+1+si], "$"
 
 out_loop_str:
 
@@ -47,11 +58,11 @@ in_loop_str_end:
 out_loop_str_end:
     inc bx
 
-    mov cx, str_len
-    dec str_len
+    mov cx, dx
+    dec dx
     loop out_loop_str
     
-    ; print
+print:
     mov ah, 09h
     lea dx, str_buf
     int 21h
