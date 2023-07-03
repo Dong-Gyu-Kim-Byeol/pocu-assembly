@@ -28,7 +28,6 @@ min: ; (num0, num1) -> min | <P, g_temp, g_temp+1>
     tsx
 
     lda PG1+4,x ; S[1]
-    sec
     cmp PG1+3,x ; S[1] - S[0]
 
     bcs .ret_num0 ; S[1] >= S[0]
@@ -117,7 +116,6 @@ minmax: ; (num0, num1) -> min, max | <P, , g_temp, , g_temp+1, g_temp+2, g_temp+
 
 ; 함수 재사용 없이 최대한 사이클을 줄일 수 있다.
 .min:
-    sec
     cmp .num1 ; .num0 - .num1
     bcs .min_num1 ; .num0 >= .num1
 
@@ -192,7 +190,6 @@ mmref: ; (num0, num1, out_min, out_max) | <P, g_temp, g_temp+1 g_temp+2, g_temp+
 ; 함수 재사용 없이 최대한 사이클을 줄일 수 있다.
 .min:
     lda g_num0
-    sec
     cmp .num1 ; g_num0 - .num1
     bcs .min_num1 ; g_num0 >= .num1
 

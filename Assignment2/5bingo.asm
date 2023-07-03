@@ -58,7 +58,6 @@ I .SET I+1
     ;
     ; modifies: A, P, g_board+g_board_index
     ;==================================
-        sec
         cmp g_board+{1}
         bne .end
         ora #G_CALL_NUM_MASK

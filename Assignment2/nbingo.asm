@@ -73,7 +73,6 @@ callnum: ; (btbl, n, num) -> -
     lda .num
 
 .loop:
-    sec
     cmp (.btbl_addr_l),y
     beq .call_end
 
@@ -184,7 +183,6 @@ won: ; (btbl, n) -> -
 
 .set_vertical_loop:
     lda .t_btbl_addr_l
-    sec
     cmp .btbl_addr_l
     beq .first_set_cross_left_top_to_right_bottom_loop
 
