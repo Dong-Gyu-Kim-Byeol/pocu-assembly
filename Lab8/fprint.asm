@@ -99,6 +99,7 @@ check_format_string:
     cmp al, 'm'
     jne max
 
+    dec di
     mov al, input_num1
     cmp al, input_num2
     jg min_num2
@@ -114,6 +115,7 @@ max:
     cmp al, 'M'
     jne abs_diff
 
+    dec di
     mov al, input_num1
     cmp al, input_num2
     jl max_num2
@@ -129,6 +131,7 @@ abs_diff:
     cmp al, 'd'
     jne make_output_release
 
+    dec di
     mov al, input_num1
     sub al, input_num2
     jnc abs_diff_convert_char
@@ -143,8 +146,6 @@ abs_diff_convert_char:
 make_output_release:
     ; clear pre character is '%'
     xor dl, dl
-    
-    dec di
 
     ; write
 write_output:
