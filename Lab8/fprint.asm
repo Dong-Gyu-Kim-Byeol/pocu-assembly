@@ -134,8 +134,8 @@ abs_diff:
     dec di
     mov al, input_num1
     sub al, input_num2
-    ;jnc abs_diff_convert_char ; 받아내림 있으면 c=1, 정상이면 c=0
-    jns abs_diff_convert_char ; 음수면 s=1, 양수면 s=0
+    jnc abs_diff_convert_char ; 받아내림 있으면 c=1, 정상이면 c=0
+    ;jns abs_diff_convert_char ; 음수면 s=1, 양수면 s=0
 
     not al
     add al, 1
