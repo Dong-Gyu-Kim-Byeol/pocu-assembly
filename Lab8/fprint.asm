@@ -104,11 +104,11 @@ check_format_string:
     cmp al, input_num2
     jg min_num2
 
-    jmp write_output
+    jmp make_output_end
 
 min_num2:
     mov al, input_num2
-    jmp write_output
+    jmp make_output_end
 
     ; max
 max:
@@ -120,16 +120,16 @@ max:
     cmp al, input_num2
     jl max_num2
 
-    jmp write_output
+    jmp make_output_end
 
 max_num2:
     mov al, input_num2
-    jmp write_output
+    jmp make_output_end
 
     ; abs diff
 abs_diff:
     cmp al, 'd'
-    jne write_output
+    jne make_output_end
 
     dec di
     mov al, input_num1
@@ -142,6 +142,10 @@ abs_diff:
 
 abs_diff_convert_char:
     or al, 00110000b
+
+make_output_end:
+    ; clear pre character is '%'
+    xor dl, dl
 
     ; write
 write_output:
