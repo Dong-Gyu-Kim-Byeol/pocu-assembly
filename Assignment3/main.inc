@@ -175,7 +175,7 @@ check_char_loop:
     xor ah, ah
     xor dx, dx
     mov dl, file_buf[si]
-    assert ax, dx, wrong_character_msg
+    assert dx, ax, wrong_character_msg
 
     inc si
 
