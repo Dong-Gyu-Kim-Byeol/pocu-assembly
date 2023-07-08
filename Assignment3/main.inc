@@ -25,7 +25,7 @@ input_buf DB BUFSIZE DUP(?)
 
 file_buf_size DB BUFSIZE-1
 file_buf_len DB ?
-file_buf DB BUFSIZE DUP('a')
+file_buf DB BUFSIZE DUP(?)
 
 ; macro
 
@@ -46,9 +46,6 @@ ENDM
 ; - end_char
 ; ------------------------------------------------------------------------------------------------------------------------------
 input_str MACRO buf_start, end_char
-    LOCAL exit
-    LOCAL set_si_last
-
     xor ax, ax
     mov buf_start[1], al
     mov ah, 0Ah
@@ -59,18 +56,7 @@ input_str MACRO buf_start, end_char
     xor ax, ax
     mov al, buf_start[1]
     mov si, ax
-    jl set_si_last
-
-    xor ax, ax
-    mov al, buf_start[0]
-    mov si, ax
     mov buf_start[si+2], end_char
-    jmp exit
-
-set_si_last:
-    mov buf_start[si+2], end_char
-
-exit:
 ENDM
 
 ; -----------------
@@ -131,7 +117,6 @@ ENDM
     mov iv_offset_int3, OFFSET int3_handler
     set_iv 3, iv_segment_int3, iv_offset_int3
 
-
     ; print file name input
     print_str OFFSET file_name_input_msg_newline
     input_str input_buf_size, 0
@@ -141,6 +126,8 @@ ENDM
     mov al, FILE_ACCESS_MODE_READ_ONLY
     mov dx, OFFSET input_buf
     int 21h
+
+    jc exit
 
     ; file read
     mov si, ax
@@ -152,6 +139,8 @@ ENDM
     mov ah, 3Fh
     mov al, FILE_ACCESS_MODE_READ_ONLY
     int 21h
+
+    jc exit
     
     mov file_buf_len, al
     mov di, ax
@@ -162,6 +151,8 @@ ENDM
     mov ah, 3Eh
     xor al, al
     int 21h
+
+    jc exit
     
     ; print file str
     print_str OFFSET newline_typing_start_msg_newline
