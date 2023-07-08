@@ -5,7 +5,6 @@
 ; ------------------------------------------------
 int3_handler PROC
     print_str di
-    print_str OFFSET newline_msg
 
     iret
 

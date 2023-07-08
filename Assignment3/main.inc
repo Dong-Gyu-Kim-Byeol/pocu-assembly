@@ -17,7 +17,7 @@ iv_offset_int3 DW ?
 newline_msg DB NEWLINE,STREND
 file_name_input_msg_newline DB 'input file name: ',NEWLINE,STREND
 newline_typing_start_msg_newline DB NEWLINE,'input start typing: ',NEWLINE,STREND
-wrong_character_msg DB '[wrong character intput]',STREND
+wrong_character_msg DB '[wrong character intput]',NEWLINE,STREND
 
 input_buf_size DB BUFSIZE-1
 input_buf_len DB ?
