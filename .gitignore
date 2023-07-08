@@ -331,3 +331,4 @@ ASALocalRun/
 
 # build & POBS tool
 _tool/
+*.EXE
