@@ -43,8 +43,9 @@ ENDM
 ;   00    	1   	maximum characters buffer can hold
 ;   01	    1	    number of chars from last input which may be recalled OR number of characters actually read, excluding CR
 ;   02	    n	    actual characters read, including the final carriage return, size n == buf_start[0]+1
+; - end_char
 ; ------------------------------------------------------------------------------------------------------------------------------
-input_str MACRO buf_start
+input_str MACRO buf_start, end_char
     LOCAL exit
     LOCAL set_si_last
 
@@ -54,7 +55,7 @@ input_str MACRO buf_start
     mov dx, OFFSET buf_start
     int 21h
 
-    ; set STREND
+    ; set end_char
     xor ax, ax
     mov al, buf_start[1]
     mov si, ax
@@ -63,11 +64,11 @@ input_str MACRO buf_start
     xor ax, ax
     mov al, buf_start[0]
     mov si, ax
-    mov buf_start[si+2], STREND
+    mov buf_start[si+2], end_char
     jmp exit
 
 set_si_last:
-    mov buf_start[si+2], STREND
+    mov buf_start[si+2], end_char
 
 exit:
 ENDM
@@ -133,7 +134,7 @@ ENDM
 
     ; print file name input
     print_str OFFSET file_name_input_msg_newline
-    input_str input_buf_size
+    input_str input_buf_size, 0
 
     ; file open
     mov ah, 3Dh
