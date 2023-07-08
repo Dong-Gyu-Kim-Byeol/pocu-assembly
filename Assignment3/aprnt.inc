@@ -1,0 +1,12 @@
+; ------------------------------------------------
+; in
+; - di: 화면에 출력한 메시지의 주소(오프셋)
+; - msg: 콘솔창에 출력할 메세지
+; ------------------------------------------------
+int3_handler PROC
+    print_str di
+    print_str OFFSET newline_msg
+
+    iret
+
+int3_handler ENDP
