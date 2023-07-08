@@ -16,13 +16,13 @@ number_msg DB 'put one number, number is 0~9: $'
 
 input_buf_size DB BUFSIZE
 input_buf_len DB ?
-input_buf DB BUFSIZE+1 DUP('a')
+input_buf DB BUFSIZE+1 DUP(?)
 
 input_num1 DB ?
 input_num2 DB ?
 
 newline_output_buf DB NEWLINE
-output_buf DB BUFSIZE+1 DUP('a')
+output_buf DB BUFSIZE+1 DUP(?)
 
 .CODE
 .STARTUP
