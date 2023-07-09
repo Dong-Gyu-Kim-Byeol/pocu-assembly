@@ -8,11 +8,11 @@ STREND EQU '$'
 FILE_ACCESS_MODE_READ_ONLY EQU 0
 
 .DATA
-origin_iv_segment_int3 DW ?
 origin_iv_offset_int3 DW ?
+origin_iv_segment_int3 DW ?
 
-iv_segment_int3 DW ?
 iv_offset_int3 DW ?
+iv_segment_int3 DW ?
 
 newline_msg DB NEWLINE,STREND
 file_name_input_msg_newline DB 'input file name: ',NEWLINE,STREND
@@ -82,7 +82,7 @@ ENDM
 ; -----------------
 ; -
 ; -----------------
-store_iv MACRO int_num, store_iv_segment, store_iv_offset
+get_iv MACRO int_num, store_iv_segment, store_iv_offset
     push es
 
     mov ah, 35h
@@ -110,7 +110,7 @@ ENDM
 .CODE
 .STARTUP
     ; get int 3 interupt vector
-    store_iv 3, origin_iv_segment_int3, origin_iv_offset_int3
+    get_iv 3, origin_iv_segment_int3, origin_iv_offset_int3
 
     ; set int 3 interupt vector
     mov iv_segment_int3, SEG int3_handler
