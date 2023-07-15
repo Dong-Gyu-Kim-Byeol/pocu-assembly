@@ -120,7 +120,8 @@ calc_avg:
     ; convert milli
     fidiv convert_milli_div
     frndint
-    ; save avg_milli, [0, 60999]
+    ; save avg_milli, [0, 60999].
+    ; WORD면 signed 범위 초과 시 음수 최대값 비트 패턴(1000 0000 0000 0000)이 저장된다.
     fistp DWORD PTR avg_milli_l
     fwait
 
