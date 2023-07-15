@@ -26,7 +26,8 @@ convert_milli_div DW ?
 float64_count DW ?
 
 ; [0, 60999]
-avg_milli DW ?
+avg_milli_l DW ?
+avg_milli_h DW ?
 newline_avg_str DB NEWLINE
 avg_str DB '00.000',STR_END_CHAR_CONSOL
 
@@ -110,7 +111,7 @@ print_avg:
     ; check float64_count
     cmp float64_count, 0
     jne calc_avg
-    mov avg_milli, 0
+    mov avg_milli_l, 0
     jmp make_avg_str
 
     ; calc avg
@@ -119,13 +120,13 @@ calc_avg:
     ; convert milli
     fidiv convert_milli_div
     frndint
-    ; save avg_milli
-    fistp avg_milli
+    ; save avg_milli, [0, 60999]
+    fistp DWORD PTR avg_milli_l
     fwait
 
     ; make avg str
 make_avg_str:
-    mov ax, avg_milli
+    mov ax, avg_milli_l
     mov cx, 10
 
     xor dx, dx
