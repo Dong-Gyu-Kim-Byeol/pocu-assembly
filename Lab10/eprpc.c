@@ -17,7 +17,7 @@ void eprpc_load(const double num)
     }
 }
 
-void eprpc_get_result(const double* out_result)
+void eprpc_get_result(double* out_result)
 {
     __asm {
         sub esp, 8
