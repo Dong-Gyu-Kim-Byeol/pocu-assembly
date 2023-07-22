@@ -1,5 +1,6 @@
 #include <assert.h>
 #include <math.h>
+#include <stdio.h>
 
 #include "calc.h"
 #include "eprpc.h"

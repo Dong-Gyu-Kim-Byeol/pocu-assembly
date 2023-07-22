@@ -2,6 +2,7 @@
 
 #include <assert.h>
 #include <math.h>
+#include <stdio.h>
 
 #include "eprpc.h"
 
@@ -22,140 +23,72 @@ void parse_rpn(const char* line, op_t* ops, double* operands, const size_t count
     // '/'
 
     char* p_line = line;
+    char* p_word = line;
     op_t* p_ops = ops;
     double* p_operands = operands;
 
     char is_new = TRUE;
-    char is_num = TRUE;
-    char is_mantissa_minus = FALSE;
-    char is_mantissa_dot = FALSE;
-    char is_exponent = FALSE;
-    char is_exponent_minus = FALSE;
-    double mantissa_dot_h = 0;
-    double mantissa_dot_l = 0;
-    double mantissa_dot_l_mul = 0.1;
-    double exponent = 0;
 
     while (TRUE) {
         char c = *p_line++;
 
-        if (c == ' ' || c == NULL) {
-            if (is_num) {
-                mantissa_dot_h += mantissa_dot_l;
+        if (c == ' ' || c == '\0') {
+            double num;
+            int result = sscanf(p_word, "%lf", &num);
 
-                if (is_mantissa_minus) {
-                    mantissa_dot_h *= -1;
-                }
-
-                if (is_exponent) {
-                    if (is_exponent_minus) {
-                        mantissa_dot_h *= powl(10, -1 * exponent);
-                    } else {
-                        mantissa_dot_h *= powl(10, exponent);
-                    }
-                }
-
-                *p_operands++ = mantissa_dot_h;
+            if (result == 1) {
+                *p_operands++ = num;
                 *p_ops++ = OP_LOAD;
             } else {
                 *p_operands++ = 0;
             }
+
+            p_word = p_line;
+            is_new = TRUE;
         }
 
-        if (c == NULL) {
+        if (c == '\0') {
             break;
         }
 
         switch (c) {
         case ' ':
-            is_new = TRUE;
-            is_num = TRUE;
-            is_mantissa_minus = FALSE;
-            is_mantissa_dot = FALSE;
-            is_exponent = FALSE;
-            is_exponent_minus = FALSE;
-            mantissa_dot_h = 0;
-            mantissa_dot_l = 0;
-            mantissa_dot_l_mul = 0.1;
-            exponent = 0;
             break;
 
         case '-':
-            if (is_new) {
+            if (is_new && (*p_line == '\0' || *p_line == ' ')) {
                 is_new = FALSE;
-
-                if (*p_line == NULL || *p_line == ' ') {
-                    *p_ops++ = OP_SUB;
-                    is_num = FALSE;
-                    break;
-                }
-
-                is_mantissa_minus = TRUE;
+                *p_ops++ = OP_SUB;
                 break;
             }
-
-            if (is_exponent) {
-                is_exponent_minus = TRUE;
-                break;
-            }
-
-            assert(0);
-            break;
-
-        case '.':
-            is_mantissa_dot = TRUE;
-            break;
-
-        case 'e':
-            is_exponent = TRUE;
-            is_mantissa_dot = FALSE;
             break;
 
         case '+':
-            if (is_new) {
+            if (is_new && (*p_line == '\0' || *p_line == ' ')) {
                 is_new = FALSE;
                 *p_ops++ = OP_ADD;
-                is_num = FALSE;
                 break;
             }
-            /*if (is_exponent) {
-                is_exponent_minus = FALSE;
-            }*/
             break;
 
         case '*':
-            is_new = FALSE;
-            *p_ops++ = OP_MUL;
-            is_num = FALSE;
+            if (is_new && (*p_line == '\0' || *p_line == ' ')) {
+                is_new = FALSE;
+                *p_ops++ = OP_MUL;
+                break;
+            }
             break;
 
         case '/':
-            is_new = FALSE;
-            *p_ops++ = OP_DIV;
-            is_num = FALSE;
+            if (is_new && (*p_line == '\0' || *p_line == ' ')) {
+                is_new = FALSE;
+                *p_ops++ = OP_DIV;
+                break;
+            }
             break;
 
         default:
-            assert('0' <= c);
-            assert(c <= '9');
-
             is_new = FALSE;
-
-            if (!is_exponent && !is_mantissa_dot) {
-                mantissa_dot_h *= 10;
-                mantissa_dot_h += c - '0';
-                break;
-            }
-            if (!is_exponent && is_mantissa_dot) {
-                mantissa_dot_l += (c - '0') * mantissa_dot_l_mul;
-                mantissa_dot_l_mul /= 10;
-                break;
-            }
-
-            assert(is_exponent == TRUE);
-
-            exponent *= 10;
-            exponent += c - '0';
             break;
         }
     }
