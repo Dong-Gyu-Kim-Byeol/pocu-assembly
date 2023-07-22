@@ -33,7 +33,7 @@ void parse_rpn(const char* line, op_t* ops, double* operands, const size_t count
         char c = *p_line++;
 
         if (c == ' ' || c == '\0') {
-            double num;
+            double num = 0;
             int result = sscanf(p_word, "%lf", &num);
 
             if (result == 1) {
