@@ -8,7 +8,8 @@
 #define TRUE ((char)0xFF)
 #define FALSE (0)
 
-void parse_rpn(const char* line, op_t* ops, double* operands, const size_t count) {
+void parse_rpn(const char* line, op_t* ops, double* operands, const size_t count)
+{
     // ' ' // 구분
     // '-' // 부호
     // '.' // 가수부 '.' 이하
@@ -38,9 +39,7 @@ void parse_rpn(const char* line, op_t* ops, double* operands, const size_t count
     while (*p_line != NULL) {
         char c = *p_line++;
 
-        switch (c)
-        {
-        case ' ':
+        if (c == ' ' || c == NULL) {
             if (is_num) {
                 mantissa_dot_h += mantissa_dot_l;
 
@@ -58,8 +57,17 @@ void parse_rpn(const char* line, op_t* ops, double* operands, const size_t count
 
                 *p_operands++ = mantissa_dot_h;
                 *p_ops++ = OP_LOAD;
+            } else {
+                *p_operands++ = 0;
             }
+        }
 
+        if (c == NULL) {
+            break;
+        }
+
+        switch (c) {
+        case ' ':
             is_new = TRUE;
             is_num = TRUE;
             is_mantissa_minus = FALSE;
@@ -155,17 +163,17 @@ void parse_rpn(const char* line, op_t* ops, double* operands, const size_t count
     *p_ops++ = OP_END;
 }
 
-void calculate(const op_t* op, const double* operands) {
+void calculate(const op_t* op, const double* operands)
+{
     op_t* p_op = op;
     double* p_operands = operands;
 
     eprpc_init();
 
     while (*p_op != OP_END) {
-        switch (*p_op++)
-        {
+        switch (*p_op) {
         case OP_LOAD:
-            eprpc_load(*p_operands++);
+            eprpc_load(*p_operands);
             break;
 
         case OP_ADD:
@@ -191,5 +199,8 @@ void calculate(const op_t* op, const double* operands) {
             assert(0);
             break;
         }
+
+        ++p_op;
+        ++p_operands;
     }
 }

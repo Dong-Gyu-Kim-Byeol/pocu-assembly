@@ -1,6 +1,7 @@
 #include "eprpc.h"
 
-void __declspec(naked) eprpc_init(void) {
+void __declspec(naked) eprpc_init(void)
+{
     __asm {
         finit
         fwait
@@ -8,14 +9,16 @@ void __declspec(naked) eprpc_init(void) {
     }
 }
 
-void eprpc_load(const double num) {
+void eprpc_load(const double num)
+{
     __asm {
         fld num
         fwait
     }
 }
 
-void eprpc_get_result(const double* out_result) {
+void eprpc_get_result(const double* out_result)
+{
     double result;
 
     __asm {
@@ -32,28 +35,32 @@ void eprpc_get_result(const double* out_result) {
     }
 }
 
-void __declspec(naked) eprpc_add(void) {
+void __declspec(naked) eprpc_add(void)
+{
     __asm {
         fadd
         fwait
         ret
     }
 }
-void __declspec(naked) eprpc_sub(void) {
+void __declspec(naked) eprpc_sub(void)
+{
     __asm {
         fsub
         fwait
         ret
     }
 }
-void __declspec(naked) eprpc_mul(void) {
+void __declspec(naked) eprpc_mul(void)
+{
     __asm {
         fmul
         fwait
         ret
     }
 }
-void __declspec(naked) eprpc_div(void) {
+void __declspec(naked) eprpc_div(void)
+{
     __asm {
         fdiv
         fwait
