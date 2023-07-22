@@ -11,30 +11,19 @@
 
 void parse_rpn(const char* line, op_t* ops, double* operands, const size_t count)
 {
-    // ' ' // 구분
-    // '-' // 부호
-    // '.' // 가수부 '.' 이하
-    // 'e' // 지수부 // e+ // e-
-
-    // 연산
-    // '+'
-    // '-'
-    // '*'
-    // '/'
-
-    char* p_line = line;
-    char* p_word = line;
+    const char* p_line = line;
+    const char* p_word = line;
     op_t* p_ops = ops;
     double* p_operands = operands;
 
     char is_new = TRUE;
 
     while (TRUE) {
-        char c = *p_line++;
+        const char c = *p_line++;
 
         if (c == ' ' || c == '\0') {
             double num = 0;
-            int result = sscanf(p_word, "%lf", &num);
+            const int result = sscanf(p_word, "%lf", &num);
 
             if (result == 1) {
                 *p_operands++ = num;
@@ -98,8 +87,8 @@ void parse_rpn(const char* line, op_t* ops, double* operands, const size_t count
 
 void calculate(const op_t* op, const double* operands)
 {
-    op_t* p_op = op;
-    double* p_operands = operands;
+    const op_t* p_op = op;
+    const double* p_operands = operands;
 
     eprpc_init();
 
