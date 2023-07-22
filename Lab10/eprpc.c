@@ -19,19 +19,20 @@ void eprpc_load(const double num)
 
 void eprpc_get_result(const double* out_result)
 {
-    double result;
-
     __asm {
-        fst result
+        sub esp, 8
+
+        fst qword ptr[esp]
         fwait
 
-        lea ecx, result
-        mov edx, [ecx]
-        mov eax, dword ptr[ecx + 4]
+        mov edx, dword ptr[esp]
+        mov eax, dword ptr[esp + 4]
 
         mov ecx, out_result
         mov dword ptr[ecx], edx
         mov dword ptr[ecx + 4], eax
+
+        add esp, 8
     }
 }
 
