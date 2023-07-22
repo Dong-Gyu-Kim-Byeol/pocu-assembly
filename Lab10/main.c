@@ -31,6 +31,14 @@ int main(void)
         double operands[NUM_DATA];
         op_t ops[NUM_DATA];
 
+        parse_rpn("1.2 3.4 5.2 + * 3.4 / 2.7 -", ops, operands, NUM_DATA);
+
+        calculate(ops, operands);
+        eprpc_get_result(&result);
+
+        cmp_abs = fabs(0.33529411764705882352941176470588 - result);
+        assert(cmp_abs <= EPSILON64);
+
         parse_rpn("1.2 3.4 5.2 + * 3.4 / -2.7 +", ops, operands, NUM_DATA);
 
         calculate(ops, operands);

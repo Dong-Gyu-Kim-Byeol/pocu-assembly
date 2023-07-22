@@ -36,7 +36,7 @@ void parse_rpn(const char* line, op_t* ops, double* operands, const size_t count
     double mantissa_dot_l_mul = 0.1;
     double exponent = 0;
 
-    while (*p_line != NULL) {
+    while (TRUE) {
         char c = *p_line++;
 
         if (c == ' ' || c == NULL) {
@@ -84,7 +84,7 @@ void parse_rpn(const char* line, op_t* ops, double* operands, const size_t count
             if (is_new) {
                 is_new = FALSE;
 
-                if (p_line - line == count || *p_line == ' ') {
+                if (*p_line == NULL || *p_line == ' ') {
                     *p_ops++ = OP_SUB;
                     is_num = FALSE;
                     break;
