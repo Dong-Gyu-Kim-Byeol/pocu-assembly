@@ -32,7 +32,7 @@ int main(void)
         double operands[NUM_DATA];
         op_t ops[NUM_DATA];
 
-        parse_rpn("1.2 3.4 5.2 + * 3.4 / 2.7 -", ops, operands, NUM_DATA);
+        parse_rpn("1.2 3.4 5.2 + * 3.4 / 2.7 -", ops, operands, 10);
 
         calculate(ops, operands);
         eprpc_get_result(&result);
