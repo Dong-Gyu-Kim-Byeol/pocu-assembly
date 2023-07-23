@@ -19,7 +19,7 @@ void parse_rpn(const char* line, op_t* ops, double* operands, const size_t count
     char is_new = TRUE;
 
     while (TRUE) {
-        assert(p_ops - ops < count);
+        assert((size_t)(p_ops - ops) < count);
 
         const char c = *p_line++;
 
