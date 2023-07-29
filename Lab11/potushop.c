@@ -84,7 +84,7 @@ void to_grayscale(void)
     */
 
     __asm {
-        xor eax, eax;
+        mov eax, 0;
         mov ecx, g_num_pixels;
         movaps xmm0, GRAYSCALE;
         movaps xmm1, ONE;
@@ -113,7 +113,7 @@ void to_sepia(void)
     */
 
     __asm {
-        xor eax, eax;
+        mov eax, 0;
         mov ecx, g_num_pixels;
         movaps xmm0, SEPIA_R;
         movaps xmm1, SEPIA_G;
@@ -163,7 +163,7 @@ void change_brightness(void)
     */
 
     __asm {
-        xor eax, eax;
+        mov eax, 0;
         mov ecx, g_num_pixels;
         movaps xmm0, s_brightness;
         movaps xmm1, ONE;
@@ -184,7 +184,7 @@ void change_brightness(void)
 void change_levels(void)
 {
     __asm {
-        xor eax, eax;
+        mov eax, 0;
         mov ecx, g_num_pixels;
         movaps xmm0, s_level_in_min;
         movaps xmm1, s_level_in_max;
