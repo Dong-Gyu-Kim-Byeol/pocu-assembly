@@ -26,7 +26,7 @@ static vector4_t s_brightness = { 0.f, 0.f, 0.f, 0.f };
 static vector4_t s_level_in_min = { 0.f, 0.f, 0.f, 0.f };
 static vector4_t s_level_in_max = { 0.f, 0.f, 0.f, 0.f };
 static vector4_t s_level_out_min = { 0.f, 0.f, 0.f, 0.f };
-static vector4_t s_level_out_cvt = { 0.f, 0.f, 0.f, 0.f };
+static vector4_t s_level_scale = { 0.f, 0.f, 0.f, 0.f };
 
 void set_brightness_arg(int brightness)
 {
@@ -59,20 +59,18 @@ void set_level_args(int in_min, int in_max, int out_min, int out_max)
     s_level_in_max.z = in_max_f;
 
     /*
-    v∈[in_min, in_max]를  v∈[out_min, out_max]로 변환
-    { (v - in_min) / (in_max - in_min) } * (out_max - out_min) + out_min
-    = (v - in_min) * ((out_max - out_min) / (in_max - in_min)) + out_min
-    = (v - in_min) * out_cvt + out_min
+    v∈[in_min, in_max]를  v∈[out_min, out_max]로 변환 공식 :
+    new_v = (v - in_min) * scale + out_min
     */
     const float out_min_f = (float)((double)out_min / MAX_COLOR_VALUE);
     s_level_out_min.x = out_min_f;
     s_level_out_min.y = out_min_f;
     s_level_out_min.z = out_min_f;
 
-    const float out_cvt_f = (float)((double)(out_max - out_min) / (double)(in_max - in_min));
-    s_level_out_cvt.x = out_cvt_f;
-    s_level_out_cvt.y = out_cvt_f;
-    s_level_out_cvt.z = out_cvt_f;
+    const float out_scale_f = (float)((double)(out_max - out_min) / (double)(in_max - in_min));
+    s_level_scale.x = out_scale_f;
+    s_level_scale.y = out_scale_f;
+    s_level_scale.z = out_scale_f;
 }
 
 void to_grayscale(void)
@@ -88,14 +86,19 @@ void to_grayscale(void)
         mov ecx, g_num_pixels;
         movaps xmm0, GRAYSCALE;
         movaps xmm1, ONE;
-        xorps xmm2, xmm2;
+        //xorps xmm2, xmm2;
 
     pixel_loop:
         movaps xmm7, g_pixels[eax];
+
+        /*
         mulps xmm7, xmm0;
         haddps xmm7, xmm2;
         haddps xmm7, xmm2;
-        shufps xmm7, xmm7, 00000000b;
+        shufps xmm7, xmm7, 01000000b;
+        */
+        dpps xmm7, xmm0, 11110111b;
+
         minps xmm7, xmm1;
         movaps g_pixels[eax], xmm7;
 
@@ -119,31 +122,40 @@ void to_sepia(void)
         movaps xmm1, SEPIA_G;
         movaps xmm2, SEPIA_B;
         movaps xmm3, ONE;
-        xorps xmm4, xmm4;
+        //xorps xmm4, xmm4;
 
     pixel_loop:
         movaps xmm7, g_pixels[eax];
         xorps xmm6, xmm6;
 
         movaps xmm5, xmm7;
+        /*
         mulps xmm5, xmm0;
         haddps xmm5, xmm4;
         haddps xmm5, xmm4;
         shufps xmm5, xmm5, 01010100b;
+        */
+        dpps xmm5, xmm0, 11110001b;
         addps xmm6, xmm5;
 
         movaps xmm5, xmm7;
+        /*
         mulps xmm5, xmm1;
         haddps xmm5, xmm4;
         haddps xmm5, xmm4;
         shufps xmm5, xmm5, 01010001b;
+        */
+        dpps xmm5, xmm1, 11110010b;
         addps xmm6, xmm5;
 
         movaps xmm5, xmm7;
+        /*
         mulps xmm5, xmm2;
         haddps xmm5, xmm4;
         haddps xmm5, xmm4;
         shufps xmm5, xmm5, 01000101b;
+        */
+        dpps xmm5, xmm2, 11110100b;
         addps xmm6, xmm5;
 
         minps xmm6, xmm3;
@@ -188,7 +200,7 @@ void change_levels(void)
         mov ecx, g_num_pixels;
         movaps xmm0, s_level_in_min;
         movaps xmm1, s_level_in_max;
-        movaps xmm2, s_level_out_cvt;
+        movaps xmm2, s_level_scale;
         movaps xmm3, s_level_out_min;
 
     pixel_loop:
@@ -197,10 +209,8 @@ void change_levels(void)
         minps xmm7, xmm1;
 
         /*
-        v∈[in_min, in_max]를  v∈[out_min, out_max]로 변환
-        { (v - in_min) / (in_max - in_min) } * (out_max - out_min) + out_min
-        = (v - in_min) * ((out_max - out_min) / (in_max - in_min)) + out_min
-        = (v - in_min) * out_cvt + out_min
+        v∈[in_min, in_max]를  v∈[out_min, out_max]로 변환 공식 :
+        new_v = (v - in_min) * scale + out_min
         */
         subps xmm7, xmm0;
         mulps xmm7, xmm2;
