@@ -108,6 +108,17 @@ int test_assert(void)
             ASSERT_VEC_EQUALS(&expected[i], &world_points[i]);
         }
     }
+
+    {
+        enum { NUM_POINTS = 3 };
+        vec4_t points[NUM_POINTS] = {
+            { 612.458862f, 502.862152f, 566.409790f, 1.0f },
+            { 105.402145f, -333.766022f, -167.346207f, 1.0f },
+            { -109.100571f, -130.558533f, -702.911804f, 1.0f }
+        };
+
+        print_csv(points, NUM_POINTS);
+    }
 }
 
 void test_tool(void)

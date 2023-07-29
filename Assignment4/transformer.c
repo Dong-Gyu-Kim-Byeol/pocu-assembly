@@ -28,11 +28,7 @@ void print_csv(const vec4_t* points, const size_t count)
     const size_t last_i = count - 1;
 
     for (size_t i = 0; i < count; ++i) {
-        if (i == last_i) {
-            printf("%.4f, %.4f, %.4f", points[i].x, points[i].y, points[i].z);
-        } else {
-            printf("%.4f, %.4f, %.4f\n", points[i].x, points[i].y, points[i].z);
-        }
+        printf("%.4f, %.4f, %.4f\n", points[i].x, points[i].y, points[i].z);
     }
 }
 
