@@ -84,20 +84,20 @@ void to_grayscale(void)
     */
 
     __asm {
-        lea eax, g_pixels;
+        xor eax, eax;
         mov ecx, g_num_pixels;
         movaps xmm0, GRAYSCALE;
         movaps xmm1, ONE;
         xorps xmm2, xmm2;
 
     pixel_loop:
-        movaps xmm7, dword ptr[eax];
+        movaps xmm7, g_pixels[eax];
         mulps xmm7, xmm0;
         haddps xmm7, xmm2;
         haddps xmm7, xmm2;
         shufps xmm7, xmm7, 00000000b;
         minps xmm7, xmm1;
-        movaps dword ptr[eax], xmm7;
+        movaps g_pixels[eax], xmm7;
 
         add eax, 16;
         loop pixel_loop;
@@ -113,7 +113,7 @@ void to_sepia(void)
     */
 
     __asm {
-        lea eax, g_pixels;
+        xor eax, eax;
         mov ecx, g_num_pixels;
         movaps xmm0, SEPIA_R;
         movaps xmm1, SEPIA_G;
@@ -122,7 +122,7 @@ void to_sepia(void)
         xorps xmm4, xmm4;
 
     pixel_loop:
-        movaps xmm7, dword ptr[eax];
+        movaps xmm7, g_pixels[eax];
         xorps xmm6, xmm6;
 
         movaps xmm5, xmm7;
@@ -147,7 +147,7 @@ void to_sepia(void)
         addps xmm6, xmm5;
 
         minps xmm6, xmm3;
-        movaps dword ptr[eax], xmm6;
+        movaps g_pixels[eax], xmm6;
 
         add eax, 16;
         loop pixel_loop;
@@ -163,18 +163,18 @@ void change_brightness(void)
     */
 
     __asm {
-        lea eax, g_pixels;
+        xor eax, eax;
         mov ecx, g_num_pixels;
         movaps xmm0, s_brightness;
         movaps xmm1, ONE;
         xorps xmm2, xmm2;
 
     pixel_loop:
-        movaps xmm7, dword ptr[eax];
+        movaps xmm7, g_pixels[eax];
         addps xmm7, xmm0;
         minps xmm7, xmm1;
         maxps xmm7, xmm2;
-        movaps dword ptr[eax], xmm7;
+        movaps g_pixels[eax], xmm7;
 
         add eax, 16;
         loop pixel_loop;
@@ -184,7 +184,7 @@ void change_brightness(void)
 void change_levels(void)
 {
     __asm {
-        lea eax, g_pixels;
+        xor eax, eax;
         mov ecx, g_num_pixels;
         movaps xmm0, s_level_in_min;
         movaps xmm1, s_level_in_max;
@@ -192,7 +192,7 @@ void change_levels(void)
         movaps xmm3, s_level_out_min;
 
     pixel_loop:
-        movaps xmm7, dword ptr[eax];
+        movaps xmm7, g_pixels[eax];
         maxps xmm7, xmm0;
         minps xmm7, xmm1;
 
@@ -206,7 +206,7 @@ void change_levels(void)
         mulps xmm7, xmm2;
         addps xmm7, xmm3;
 
-        movaps dword ptr[eax], xmm7;
+        movaps g_pixels[eax], xmm7;
 
         add eax, 16;
         loop pixel_loop;
