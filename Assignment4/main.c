@@ -5,6 +5,9 @@
 #define ASSERT_MAT_EQUALS(expected, actual) assert(memcmp(expected, actual, sizeof(mat4_t)) == 0)
 #define ASSERT_VEC_EQUALS(expected, actual) assert(memcmp(expected, actual, sizeof(vec4_t)) == 0)
 
+// 내 문서: https://docs.google.com/spreadsheets/d/1biPxxpOir-KG8o5zpFfIYwM4jO3Z-rqSGEZjZlQq1iU/edit#gid=2141701244
+// POCU 문서: https://docs.google.com/spreadsheets/d/1UqWgdjTsD-EhE8IQDSaO8nCrqS94MzjZFkY5wZLRjf0/edit#gid=2141701244
+
 int test_assert(void);
 void test_tool(void);
 

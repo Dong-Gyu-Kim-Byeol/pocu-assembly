@@ -1,0 +1,190 @@
+#include <assert.h>
+
+#include "potushop.h"
+#include "image.h"
+
+ALIGN16 typedef struct vector4 {
+    float x;
+    float y;
+    float z;
+    float w;
+} vector4_t;
+
+const static vector4_t GRAYSCALE = { 0.3f, 0.59f, 0.11f, 0.f };
+
+const static vector4_t SEPIA_R = { 0.393f, 0.769f, 0.189f, 0.f };
+const static vector4_t SEPIA_G = { 0.349f, 0.686f, 0.168f, 0.f };
+const static vector4_t SEPIA_B = { 0.272f, 0.534f, 0.131f, 0.f };
+
+const static vector4_t RANGE_MIN = { 0.f, 0.f, 0.f, 0.f };
+const static vector4_t RANGE_MAX = { 1.f, 1.f, 1.f, 1.f };
+static vector4_t s_brightness;
+static vector4_t s_in_min;
+static vector4_t s_in_max;
+static vector4_t s_out_min;
+static vector4_t s_out_max;
+static vector4_t s_in_out_scale;
+
+void set_brightness_arg(int brightness)
+{
+    assert(brightness >= -100 && brightness <= 100);
+    assert(sizeof(vector4_t) == 16);
+
+    float scala_brightness = brightness / 255.f;
+
+    s_brightness.x = scala_brightness;
+    s_brightness.y = scala_brightness;
+    s_brightness.z = scala_brightness;
+    s_brightness.w = 0.f;
+}
+
+void set_level_args(int in_min, int in_max, int out_min, int out_max)
+{
+    assert(in_min >= 0 && in_min <= 253);
+    assert(in_max >= 2 && in_max <= 255);
+    assert(in_min < in_max);
+
+    assert(out_min >= 0 && out_min <= 255);
+    assert(out_max >= 0 && out_max <= 255);
+ 
+    /*
+    v2 = (v1 - in_min) / (in_max - in_min) * (out_max-out_min) + out_min
+
+    in_out_span = 1.f / (in_max-in_min) * (out_max-out_min)
+    */
+
+    float scala_in_min = in_min / 255.f;
+    float scala_in_max = in_max / 255.f;
+    float scala_out_min = out_min / 255.f;
+    float scala_out_max = out_max / 255.f;
+    float scala_in_out_scale = (float)((out_max - out_min) / (double)(in_max - in_min));
+
+    s_in_min.x = scala_in_min;
+    s_in_min.y = scala_in_min;
+    s_in_min.z = scala_in_min;
+    s_in_min.w = 0.f;
+
+    s_in_max.x = scala_in_max;
+    s_in_max.y = scala_in_max;
+    s_in_max.z = scala_in_max;
+    s_in_max.w = 0.f;
+
+    s_out_min.x = scala_out_min;
+    s_out_min.y = scala_out_min;
+    s_out_min.z = scala_out_min;
+    s_out_min.w = 0.f;
+
+    s_out_max.x = scala_out_max;
+    s_out_max.y = scala_out_max;
+    s_out_max.z = scala_out_max;
+    s_out_max.w = 0.f;
+
+    s_in_out_scale.x = scala_in_out_scale;
+    s_in_out_scale.y = scala_in_out_scale;
+    s_in_out_scale.z = scala_in_out_scale;
+    s_in_out_scale.w = 0.f;
+}
+
+void to_grayscale(void)
+{
+    __asm {
+        mov edi, g_num_pixels
+        shl edi, 4
+        mov esi, offset g_pixels
+        add edi, esi
+
+        movaps xmm7, GRAYSCALE
+
+    GRAY_LOOP:
+        movaps xmm0, [esi]
+        dpps   xmm0, xmm7, 11110111b
+        movaps [esi], xmm0
+
+        add    esi, 16
+        cmp    esi, edi
+        jne    GRAY_LOOP
+    }
+}
+
+void to_sepia(void)
+{
+    __asm {
+        mov edi, g_num_pixels
+        shl edi, 4
+        mov esi, offset g_pixels
+        add edi, esi
+
+        movaps xmm4, SEPIA_R
+        movaps xmm5, SEPIA_G
+        movaps xmm6, SEPIA_B
+        movaps xmm7, RANGE_MAX
+
+    SEPIA_LOOP :
+        movaps xmm0, [esi]
+        movaps xmm1, [esi]
+        movaps xmm2, [esi]
+        dpps   xmm0, xmm4, 11110001b
+        dpps   xmm1, xmm5, 11110010b
+        dpps   xmm2, xmm6, 11110100b
+        orps   xmm0, xmm1
+        orps   xmm0, xmm2
+        minps  xmm0, xmm7
+        movaps [esi], xmm0
+
+        add    esi, 16
+        cmp    esi, edi
+        jne    SEPIA_LOOP
+    }
+}
+
+void change_brightness(void)
+{
+    __asm {
+        mov edi, g_num_pixels
+        shl edi, 4
+        mov esi, offset g_pixels
+        add edi, esi
+
+        movaps xmm5, s_brightness
+        movaps xmm6, RANGE_MIN
+        movaps xmm7, RANGE_MAX
+
+    BRIGHT_LOOP:
+        movaps xmm0, [esi]
+        addps  xmm0, xmm5
+        maxps  xmm0, xmm6
+        minps  xmm0, xmm7
+        movaps [esi], xmm0
+
+        add    esi, 16
+        cmp    esi, edi
+        jne    BRIGHT_LOOP
+    }
+}
+
+void change_levels(void)
+{
+    __asm {
+        mov edi, g_num_pixels
+        shl edi, 4
+        mov esi, offset g_pixels
+        add edi, esi
+
+        movaps xmm4, s_in_min
+        movaps xmm5, s_in_max
+        movaps xmm6, s_in_out_scale
+        movaps xmm7, s_out_min
+
+    LEVEL_LOOP:
+        movaps      xmm0, [esi]
+        maxps       xmm0, xmm4
+        minps       xmm0, xmm5
+        subps       xmm0, xmm4
+        vfmadd213ps xmm0, xmm6, xmm7
+        movaps      [esi], xmm0
+
+        add    esi, 16
+        cmp    esi, edi
+        jne    LEVEL_LOOP
+    }
+}

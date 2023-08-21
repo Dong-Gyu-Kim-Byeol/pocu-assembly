@@ -1,0 +1,25 @@
+void transpose(mat4_t* mat)
+{
+    __asm {
+        mov edx, [mat]
+        vmovups xmm0, dword ptr[edx + 00]
+        vmovups xmm1, dword ptr[edx + 16]
+        vmovups xmm2, dword ptr[edx + 32]
+        vmovups xmm3, dword ptr[edx + 48]
+
+        vunpcklps xmm6, xmm0, xmm1
+        vunpckhps xmm0, xmm0, xmm1
+        vunpcklps xmm7, xmm2, xmm3
+        vunpckhps xmm1, xmm2, xmm3
+
+        vmovlhps xmm4, xmm6, xmm7
+        vmovhlps xmm5, xmm7, xmm6
+        vmovlhps xmm6, xmm0, xmm1
+        vmovhlps xmm7, xmm1, xmm0
+
+        vmovups dword ptr[edx + 00], xmm4
+        vmovups dword ptr[edx + 16], xmm5
+        vmovups dword ptr[edx + 32], xmm6
+        vmovups dword ptr[edx + 48], xmm7
+    }
+}
